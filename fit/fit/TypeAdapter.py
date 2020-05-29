@@ -889,6 +889,9 @@ class FieldAccessor(AccessorBaseClass):
         return getattr(self.target, self.name)
 
     def set(self, value):
+        # XXX: We need ISO8859-1 in order to test Fierro correclty
+        if type(value) == type(u""):
+            value = value.encode('latin-1')
         setattr(self.target, self.name, value)
 
     def invoke(self):

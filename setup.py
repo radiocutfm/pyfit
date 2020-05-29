@@ -69,7 +69,7 @@ if sys.argv[1] == "install":
     fixLineEndings("fit/TestRunner.py")
     fixLineEndings("fit/HtmlRunner.py")
     fixLineEndings("fit/FolderRunner.py")
-    fixLineEndings("fit/FitFilter.py")
+#    fixLineEndings("fit/FitFilter.py")
     fixLineEndings("fit/DocSource/FitMakeDocumentation.py")
 
 dist = setup(name="PyFIT",
@@ -152,7 +152,7 @@ if sys.argv[1] == "install":
     copyScript("TestRunner.py")
     copyScript("HtmlRunner.py")
     copyScript("FolderRunner.py")
-    copyScript("FitFilter.py")
+#    copyScript("FitFilter.py")
     copyScript("DocSource/FitMakeDocumentation.py")
 
     cmd2Text = "@echo off\nset PYTHONPATH=%s\n" % destDir()

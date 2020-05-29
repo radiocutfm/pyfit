@@ -246,7 +246,8 @@ class Parse(object):
         s = Parse._convertNbspToSpace(s)
         s = s.strip()
         s = Parse.unescape(s)
-        return s
+        # XXX: We need ISO8859-1 in order to test Fierro correclty
+        return s.encode('latin-1')
     htmlToText = staticmethod(htmlToText)
 
     br1re = re.compile(r"<\s*br\s*/?\s*>", flags = re.I)
