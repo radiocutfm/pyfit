@@ -31,11 +31,6 @@ port - the port the FitNesse server is listening on, frequently 80
 page-name - the full page name in FitNesse
 """
 
-try:
-    False
-except: #pragma: no cover
-    False = 0
-    True = 1
 
 import copy
 # import getopt
@@ -238,10 +233,10 @@ class FitNesseTestExecutor(object):
                         FG.appConfigInterface("afterTestExecution",
                                          self.fixture.counts,
                                          self.fixture.summary)
-                except ParseException, e:
+                except ParseException as e:
                     self.handleParseException(e, docName)
             conMsg.tmsg("completion signal received\n")
-        except Exception, e:
+        except Exception as e:
             self.exception(e)
         return self.counts
 
@@ -553,7 +548,7 @@ class FitProtocol(object):
     def readSize(reader):
         sizeString = reader.read(10)
         if len(sizeString) < 10:
-            raise Exception, "A size value could not be read. Fragment='%s'" % sizeString
+            raise Exception("A size value could not be read. Fragment='%s'" % sizeString)
         else:
             return int(sizeString)
     readSize = staticmethod(readSize)
