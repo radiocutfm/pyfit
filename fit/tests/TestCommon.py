@@ -15,7 +15,7 @@ class FitTestCommon(unittest.TestCase):
         try:
             callable(*parms)
             self.fail("No Exception Raised")
-        except FitException, e:
+        except FitException as e:
             if e.args[0] == expected:
                 return
             result = e.getMeaningfulMessage()

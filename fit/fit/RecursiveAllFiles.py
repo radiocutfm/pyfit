@@ -12,7 +12,7 @@ class RecursiveAllFiles(Fixture):
         self.startingRow = None
         self.page = ""
         self.cwd = os.getcwd()
-        print "in RecursiveAllFiles. cwd: '%s'" % (self.cwd,)
+        print("in RecursiveAllFiles. cwd: '%s'" % (self.cwd,))
 
     def doTable(self, table):
         self.startingRow = table.parts
@@ -86,7 +86,7 @@ class RecursiveAllFiles(Fixture):
             writer = open(path, "w") # ??? we're overwriting the input???
             writer.write(str(tables))
             writer.close()
-        except Exception, e:
+        except Exception as e:
             self.exception(cells, e)
 
     def read(self, inputFileName):

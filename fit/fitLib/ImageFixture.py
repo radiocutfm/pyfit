@@ -12,7 +12,7 @@ class ImageNameGraphic(object):
     expectedFile = None # LocalFile
 
     def __init__(self, aFile):
-        if isinstance(aFile, types.StringTypes):
+        if isinstance(aFile, (str,)):
             self.expectedFile = LocalFileFactory(aFile)
         elif isinstance(aFile, LocalFile):
             self.expectedFile = aFile
@@ -65,7 +65,7 @@ class GraphicTypeAdapter(object):
 ##        em("in GraphicTypeAdapter.equals a: '%s' b: '%s'" %
 ##           (a.__class__.__name__, b.__class__.__name__))
         self._getClass()
-        if isinstance(a, types.StringTypes):
+        if isinstance(a, (str,)):
             obj = self.parse(a)
         elif isinstance(a, self._class):
             obj = a

@@ -18,13 +18,6 @@ from fit.TypeAdapter import ExceptionCellHandlerParameters
 from fit import TypeAdapter
 import fit.taProtocol as taPro
 from tests.TestCommon import FitTestCommon
-
-try:
-    False
-except:
-    True = 1
-    False = 0
-
 def makeCellHandlerTest():
     suite = makeSuite(TestCellHandlers, 'test')
     suite.addTests([SpecifyExceptionCellHandlerParameterObject(x) for x in [
@@ -47,7 +40,7 @@ ERROR = "error"
 
 class TestCellHandlers(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         setupFitGlobalForTests("Batch")
         CellHandler._testInit()
 
@@ -196,7 +189,7 @@ class TestCellHandlers(TestCase):
         callbacks = AccMock(IntMock())
         result = h.check(checkCell, "spam", callbacks)
         assert result == (NEXT, None)
-        self.failUnlessRaises(KeyError, callbacks.fixture.getSymbol, "sym")
+        self.assertRaises(KeyError, callbacks.fixture.getSymbol, "sym")
         result = h.parse(parseCell, callbacks)
         assert result == (NEXT, None)
 
@@ -232,7 +225,7 @@ class AccMock(object):
 
 class SpecifyExceptionCellHandlerParameterObject(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def tearDown(self):
         pass
@@ -276,7 +269,7 @@ class TestCellHandlerInspector(TestCase):
 
 class SpecifyCellHandlerWrapper(FitTestCommon):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         setupFitGlobalForTests("Batch")
         CellHandler._testInit()
 
@@ -397,7 +390,7 @@ class SpecifyCellHandlerWrapper(FitTestCommon):
 
 class SpecifyListOfCellHandlersContainer(FitTestCommon):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         setupFitGlobalForTests("Batch")
         CellHandler._testInit()
 

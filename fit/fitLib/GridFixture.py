@@ -6,13 +6,6 @@
 
 # checks the values in a table against the values in a 2 dimensional
 # array implementedd as a list of lists.
-
-try:
-    False
-except:
-    False = 0
-    True = 1
-
 from fit.Fixture import Fixture
 from fit.Parse import Parse
 from fit import TypeAdapter
@@ -31,7 +24,7 @@ class GridFixture(Fixture):
         self._grid = grid
 
     def setTypeAdapter(self, typeDict):
-        for key in typeDict.keys():
+        for key in list(typeDict.keys()):
             parts = key.split(".")
             break
         self._typeAdapter = TypeAdapter.on(self, parts[0], typeDict)
@@ -75,7 +68,7 @@ class GridFixture(Fixture):
                 self.right(cell)
             else:
                 self.wrong(cell, self._typeAdapter.toString(actual))
-        except Exception, e:
+        except Exception as e:
             self.exception(cell, e)
         return matches
 
@@ -123,7 +116,7 @@ class GridFixture(Fixture):
         aCell = Parse(tag="td")
         try:
             aCell.body = self._typeAdapter.toString(anObject, aCell)
-        except Exception, e:
+        except Exception as e:
             self.exception(aCell, e)
         return aCell 
         

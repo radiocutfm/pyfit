@@ -6,13 +6,6 @@
 import unittest
 import fitLib.ExtendedCamelCase
 ExtendedCamelCase = fitLib.ExtendedCamelCase
-
-try:
-    False
-except:
-    True = 1
-    False = 0
-
 def makeExtendedCamelCaseTest():
     theSuite = unittest.makeSuite(Test_ExtendedCamelCase, 'test')
 #    theSuite.addTest(unittest.makeSuite(Test_FooBar, 'Test'))
@@ -21,7 +14,7 @@ def makeExtendedCamelCaseTest():
 class Test_ExtendedCamelCase(unittest.TestCase):
 
     def check(self, input, out):
-        self.assertEquals(out, ExtendedCamelCase.camel(input))
+        self.assertEqual(out, ExtendedCamelCase.camel(input))
 
     
     def testJustCamel(self):
@@ -51,10 +44,10 @@ class Test_ExtendedCamelCase(unittest.TestCase):
         self.check("return","return_")
 
     def testUnicode(self):
-        self.check(u"\u216C",u"u216C")
-        self.check(u"\u216D\uFFFE",u"u216DuFFFE")
-        self.check(u"\uFFFF",u"uFFFF")
-        self.check(u"\u0041b",u"Ab")
+        self.check("\u216C","u216C")
+        self.check("\u216D\uFFFE","u216DuFFFE")
+        self.check("\uFFFF","uFFFF")
+        self.check("\u0041b","Ab")
 
 if __name__ == '__main__':
     unittest.main(defaultTest='makeExtendedCamelCaseTest')

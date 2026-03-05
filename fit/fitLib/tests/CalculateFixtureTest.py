@@ -8,13 +8,6 @@ from fit.Parse import Parse
 from fit import InitEnvironment
 from fit.Utilities import em
 from fitLib.CalculateFixture import CalculateFixture
-
-try:
-    False
-except:
-    True = 1
-    False = 0
-
 def makeCalculateFixtureSpecifications():
     suite = unittest.TestSuite()
     suite.addTests([SpecifyCalculateFixture(x) for x in [
@@ -31,7 +24,7 @@ class CalculateFixtureExample(CalculateFixture):
 
 class SpecifyCalculateFixture(unittest.TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def makeRow(self, html):
         return Parse(html, ["tr", "td"])

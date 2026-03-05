@@ -15,11 +15,6 @@ from fit.FitException import FitException, exceptionIfNone
 from fit import TypeAdapter
 from fit.Utilities import em, firstNonNone
 
-try:
-    False
-except: #pragma: no cover
-    True = 1
-    False = 0
 
 # cannot begin or end name with an underscore
 # !!! Depreciated - use FitException instead.
@@ -55,7 +50,7 @@ class ColumnFixture(Fixture):
                 self.execute()
             if self._shouldTakeExits is not False:
                 self.endOfRow()
-        except Exception, e:
+        except Exception as e:
             self.exception(cell, e)
 
     def beginningOfRow(self, row):
@@ -70,14 +65,14 @@ class ColumnFixture(Fixture):
         a = self.columnBindings[column]
         try:
             self.columnExecutors[column](cell, a)
-        except Exception, e:
+        except Exception as e:
             self.exception(cell, e)
 
     def executeIfFirstResult(self, cell):            
         if self.hasExecuted is False:
             try:
                 self.execute()
-            except Exception, e:
+            except Exception as e:
                 self.exception(cell, e)
             self.hasExecuted = True
 
@@ -200,7 +195,7 @@ class ColumnFixture(Fixture):
             if extendedProcess == "on":
                 try:
                     kind, name = self.processLabel(heads.text(), i)
-                except Exception, e:
+                except Exception as e:
                     self.exception(heads, e)
                     heads = heads.more
                     i += 1
@@ -219,7 +214,7 @@ class ColumnFixture(Fixture):
                                                         (None, False))
             try:
                 self._bindColumnExecutor(executorName, kind, i, name)
-            except FitException, e:
+            except FitException as e:
                 self.exception(heads, e)
                 self._bindColumnExecutor("unimplementedExecutor",
                                          "ignore", i, name)
@@ -291,7 +286,7 @@ class ColumnFixture(Fixture):
         try:
             adapter = TypeAdapter.on(self, name, None, self, self.getTargetClass())
             self.columnBindings[i] = adapter
-        except Exception, e:
+        except Exception as e:
             self.exception(heads, e)
             self._bindColumnExecutor("unimplementedExecutor",
                                      "ignore", i, name)

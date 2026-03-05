@@ -21,13 +21,6 @@ from tests.RunnerTestCommon import VirtualFileSystem, MockFileObject
 from tests.RunnerTestCommon import ioMock, ft2chunk1
 from fit import SiteOptions
 from fit.Utilities import em
-
-try:
-    False
-except:
-    True = 1
-    False = 0
-
 def makeFitServerTest():
     theSuite = ut.makeSuite(Test_FitServer, 'Test')
     theSuite.addTest(ut.makeSuite(TestPythonPath, 'should'))
@@ -40,9 +33,9 @@ def makeFitServerTest():
 
 class Test_FitServer(ut.TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         setupFitGlobalForTests("FitNesseOnline")
-        if isinstance(fsi.conMsg, types.StringTypes):
+        if isinstance(fsi.conMsg, (str,)):
             em("conMsg corrupt. %s" % fsi.conMsg)
         self.savePythonPath = copy.copy(sys.path)
         self.saveNet = fsi.net
@@ -97,7 +90,7 @@ class Test_FitServer(ut.TestCase):
         fits = self.fits
         io = fsi.net
         result = fits.args(self.args3)
-        print "after arg processing. verbose: '%s'" % fits.options.verbose
+        print("after arg processing. verbose: '%s'" % fits.options.verbose)
         assert result
         assert fits.options.verbose
         assert io.host == "remotehost"
@@ -133,8 +126,8 @@ class Test_FitServer(ut.TestCase):
         fits = self.fits
         fsi.net.inputList = self.fulltest1
         result = fits.run(self.args5)
-        print "-------------- output list ----------------"
-        print "\n".join(fsi.net.outputList)
+        print("-------------- output list ----------------")
+        print("\n".join(fsi.net.outputList))
         assert result is False
 
     ft1chunk1 = ("TestProcess1\n<html><head><title>fubar</title></head>"
@@ -152,9 +145,9 @@ class Test_FitServer(ut.TestCase):
         fits = self.fits
         fsi.net.inputList = self.fulltest1
         result = fits.run(self.args3)
-        print "fits.run(arg3): %s" % result
-        print "-------------- output list ----------------"
-        print "\n".join(fsi.net.outputList)
+        print("fits.run(arg3): %s" % result)
+        print("-------------- output list ----------------")
+        print("\n".join(fsi.net.outputList))
         assert result == 0
 
     def TestIOErrorOnOutputHandler(self):
@@ -167,9 +160,9 @@ class Test_FitServer(ut.TestCase):
             pass
         except:
             raise
-        print "fits.run(arg3): %s" % result
-        print "-------------- output list ----------------"
-        print "\n".join(fsi.net.outputList)
+        print("fits.run(arg3): %s" % result)
+        print("-------------- output list ----------------")
+        print("\n".join(fsi.net.outputList))
         assert result == 0
 
     def TestIOErrorOnOutputHandler2(self):
@@ -182,9 +175,9 @@ class Test_FitServer(ut.TestCase):
             pass
         except:
             raise
-        print "fits.run(arg3): %s" % result
-        print "-------------- output list ----------------"
-        print "\n".join(fsi.net.outputList)
+        print("fits.run(arg3): %s" % result)
+        print("-------------- output list ----------------")
+        print("\n".join(fsi.net.outputList))
         assert result == 0
 
 
@@ -202,9 +195,9 @@ class Test_FitServer(ut.TestCase):
         fits = self.fits
         fsi.net.inputList = self.fullMalformedHTML
         result = fits.run(self.args3)
-        print "fits.run(arg3): %s" % result
-        print "-------------- output list ----------------"
-        print "\n".join(fsi.net.outputList)
+        print("fits.run(arg3): %s" % result)
+        print("-------------- output list ----------------")
+        print("\n".join(fsi.net.outputList))
         assert result != 0
 
     fullTruncatedProtocolHeader = ["0000000000",
@@ -215,9 +208,9 @@ class Test_FitServer(ut.TestCase):
         fits = self.fits
         fsi.net.inputList = self.fullTruncatedProtocolHeader
         result = fits.run(self.args3)
-        print "fits.run(arg3): %s" % result
-        print "-------------- output list ----------------"
-        print "\n".join(fsi.net.outputList)
+        print("fits.run(arg3): %s" % result)
+        print("-------------- output list ----------------")
+        print("\n".join(fsi.net.outputList))
         assert result != 0
 
     ftInvalidConnectionMsg = "Invalid Connection Test Message"
@@ -233,13 +226,13 @@ class Test_FitServer(ut.TestCase):
         fsi.net.inputList = self.fullInvalidConnection
         try:
             result = fits.run(self.args3)
-        except SystemExit, e:
+        except SystemExit as e:
             result = e.args
         except:
             raise
-        print "fits.run(arg3): %s" % result
-        print "-------------- output list ----------------"
-        print "\n".join(fsi.net.outputList)
+        print("fits.run(arg3): %s" % result)
+        print("-------------- output list ----------------")
+        print("\n".join(fsi.net.outputList))
         assert result != 0
 
 
@@ -258,9 +251,9 @@ class Test_FitServer(ut.TestCase):
         fits = self.fits
         fsi.net.inputList = self.fullNoReturn
         result = fits.run(self.args3)
-        print "fits.run(arg3): %s" % result
-        print "-------------- output list ----------------"
-        print "\n".join(fsi.net.outputList)
+        print("fits.run(arg3): %s" % result)
+        print("-------------- output list ----------------")
+        print("\n".join(fsi.net.outputList))
         assert result != 0
 
     ft2chunk1head = ("""TestProcess2\n
@@ -286,8 +279,8 @@ class Test_FitServer(ut.TestCase):
         fits = self.fits
         fsi.net.inputList = self.fulltest2
         result = fits.run(self.args3)
-        print "-------------- output list ----------------"
-        print "\n".join(fsi.net.outputList)
+        print("-------------- output list ----------------")
+        print("\n".join(fsi.net.outputList))
         assert result == 10 # 9 wrong, 1 exception
 
     ft2Doc1 = ("Two Doucments 1\n"
@@ -314,14 +307,14 @@ class Test_FitServer(ut.TestCase):
         fits = self.fits
         fsi.net.inputList = self.full2Docs
         result = fits.run(self.args3)
-        print "fits.run(arg3): %s" % result
-        print "-------------- output list ----------------"
-        print "\n".join(fsi.net.outputList)
+        print("fits.run(arg3): %s" % result)
+        print("-------------- output list ----------------")
+        print("\n".join(fsi.net.outputList))
         assert result == 0
 
 class TestPythonPath(ut.TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         setupFitGlobalForTests("FitNesseOnline")
         self.savePath = copy.copy(sys.path)
         self.fits = fsi.ServerBase()
@@ -389,7 +382,7 @@ class TestPythonPath(ut.TestCase):
 
 class Test_TestRunnerInitialization(ut.TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         setupFitGlobalForTests("FitNesseBatch")
         self.saveMsg = fsi.conMsg
         fsi.conMsg = fsi.TestMsgWriter()
@@ -456,7 +449,7 @@ class Test_TestRunnerInitialization(ut.TestCase):
 
 class Test_TestRunner(ut.TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         setupFitGlobalForTests("FitNesseBatch")
         self.savePath = copy.copy(sys.path)
         self.saveMsg = fsi.conMsg
@@ -498,8 +491,8 @@ class Test_TestRunner(ut.TestCase):
         trun = self.trun
         fsi.netIn.inputList = self.fulltest1
         result = trun.run(self.args3)
-        print "-------------- output list ----------------"
-        print "\n".join(fsi.netOut.outputList)
+        print("-------------- output list ----------------")
+        print("\n".join(fsi.netOut.outputList))
         assert result
 
 # full test # 2
@@ -527,8 +520,8 @@ class Test_TestRunner(ut.TestCase):
         trun = self.trun
         fsi.netIn.inputList = self.fulltest2
         result = trun.run(self.args4)
-        print "-------------- output list ----------------"
-        print "\n".join(fsi.netOut.outputList)
+        print("-------------- output list ----------------")
+        print("\n".join(fsi.netOut.outputList))
         assert result
 
     ft2Doc1 = ("Two Doucments 1\n"
@@ -555,9 +548,9 @@ class Test_TestRunner(ut.TestCase):
         trun = self.trun
         fsi.netIn.inputList = self.full2Docs
         result = trun.run(self.args3)
-        print "trun.run(arg3): %s" % result
-        print "-------------- output list ----------------"
-        print "\n".join(fsi.netOut.outputList)
+        print("trun.run(arg3): %s" % result)
+        print("-------------- output list ----------------")
+        print("\n".join(fsi.netOut.outputList))
         assert result
 
     fpServerParms = "fubar;shazoom.true"
@@ -582,9 +575,9 @@ class Test_TestRunner(ut.TestCase):
         trun = self.trun
         fsi.netIn.inputList = self.full2Docs
         result = trun.run(self.args5)
-        print "trun.run(arg5): %s" % result
-        print "-------------- output list ----------------"
-        print "\n".join(fsi.netOut.outputList)
+        print("trun.run(arg5): %s" % result)
+        print("-------------- output list ----------------")
+        print("\n".join(fsi.netOut.outputList))
         assert result
 
 class TestStatsHandler(ut.TestCase):
@@ -623,11 +616,11 @@ class TestStatsHandler(ut.TestCase):
         text = obj.endOfAllTests()
         assert text.startswith('<?xml version="1.0"?>')
         assert text.count("<right>") == 3
-        print text
+        print(text)
 
 class TestOutputFileHandling(ut.TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         setupFitGlobalForTests("FitNesseBatch")
         self.savePath = copy.copy(sys.path)
         self.saveMsg = fsi.conMsg
@@ -668,8 +661,8 @@ class TestOutputFileHandling(ut.TestCase):
         trun = self.trun
         fsi.netIn.inputList = self.fulltest1
         result = trun.run(self.args4)
-        print "-------------- output list ----------------"
-        print "\n".join(fsi.netOut.outputList)
+        print("-------------- output list ----------------")
+        print("\n".join(fsi.netOut.outputList))
         assert len(FG.fsa.listdir("tests/testout")) == 3
         assert result
 
@@ -685,13 +678,13 @@ class TestOutputFileHandling(ut.TestCase):
         trun = self.trun
         fsi.netIn.inputList = self.fulltest1
         result = trun.run(self.args5)
-        print "-------------- output list ----------------"
-        print "\n".join(fsi.netOut.outputList)
+        print("-------------- output list ----------------")
+        print("\n".join(fsi.netOut.outputList))
         assert not result
 
 class SpecifyListOfFiles(ut.TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         setupFitGlobalForTests("FitNesseBatch")
         self.savePath = copy.copy(sys.path)
         self.saveMsg = fsi.conMsg

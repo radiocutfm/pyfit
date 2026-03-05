@@ -68,4 +68,4 @@ def displayCount():
     return count
 
 def displayContents():
-    return filter(lambda x: x.selected, library)
+    return [x for x in library if x.selected]

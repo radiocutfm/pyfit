@@ -6,7 +6,7 @@
 # Last updated for Release 0.8a1
 #endLegalStuff
 
-import compiler
+import ast
 import math
 import operator
 import re
@@ -25,11 +25,8 @@ from fit.Parse import Parse
 from fit.taTable import typeAdapterTable, typeToAdapter, _isApplicationProtocol
 from fit.Utilities import em, firstNonNone
 
-try:
-    False
-except: #pragma: no cover
-    True = 1
-    False = 0
+StringTypes = (str,)
+
 
 ## Type Adapters ####################################
 
@@ -55,80 +52,66 @@ class TypeAdapter(object):
         return str(o)
 
     def _safeEval(self, s):
-        """
-        Evaluate strings that only contain the following structures:
-        const,  tuple,  list,   dict
-        Taken from c.l.py newsgroup posting Nov 5, 2003 by Huaiyu Zhu at IBM Almaden
-        ??? this may need to be expanded to support complex numbers in lists, etc.
-        """
-        #print "in _safeEval. input: '%s'" % s
-        node1 = compiler.parse(s)
+        try:
+            node = ast.parse(s, mode="eval").body
+            return self._safeAssemble(node)
+        except FitException:
+            raise
+        except Exception:
+            raise FitException("Parse003", "literal_eval")
 
-        # !!! special case of attempting to compile a lone string
-        if node1.doc is not None and len(node1.node.nodes) == 0:
-            #print "in _safeEval. string: '%s' found as docstring" % node1.doc
-            return node1.doc
-
-        #print "in _safeEval. nodes: '%s'" % (node1,)
-        stmts = node1.node.nodes
-        assert len(stmts) == 1
-        node = compiler.parse(s).node.nodes[0]
-        assert node.__class__ == compiler.ast.Discard
-        nodes = node.getChildNodes()
-        assert len(nodes) == 1
-        result = self._safeAssemble(nodes[0])
-        #print "in _safeEval result: '%s'" % (result,)
-        return result
-
-    seq_types = {
-        compiler.ast.Tuple: tuple,
-        compiler.ast.List: list,
+    def _legacyClassName(self, node_or_class):
+        cls = node_or_class if isinstance(node_or_class, type) else node_or_class.__class__
+        map_table = {
+            ast.Mult: "compiler.ast.Mul",
+            ast.Div: "compiler.ast.Div",
+            ast.Mod: "compiler.ast.Mod",
+            ast.Pow: "compiler.ast.Power",
+            ast.BitXor: "compiler.ast.Bitxor",
+            ast.BitAnd: "compiler.ast.Bitand",
+            ast.BitOr: "compiler.ast.Bitor",
+            ast.FloorDiv: "compiler.ast.FloorDiv",
+            ast.Call: "compiler.ast.CallFunc",
+            ast.Attribute: "compiler.ast.Getattr",
+            ast.Subscript: "compiler.ast.Subscript",
+            ast.UnaryOp: "compiler.ast.UnarySub",
         }
-    map_types = {
-        compiler.ast.Dict: dict,
-        }
-
-    oper_types = {
-        compiler.ast.Add: operator.add,
-        compiler.ast.Sub: operator.sub,
-        }
-
-    builtin_consts = {
-        "True": True,
-        "False": False,
-        "None": None,
-        }
+        return map_table.get(cls, "compiler.ast.%s" % cls.__name__)
 
     def _safeAssemble(self, node):
-        """ Recursively assemble parsed ast node """
-        cls = node.__class__
-        if cls == compiler.ast.Const:
+        if isinstance(node, ast.Constant):
             return node.value
-        elif cls in self.seq_types:
-            nodes = node.nodes
-            args = map(self._safeAssemble, nodes)
-            return self.seq_types[cls](args)
-        elif cls in self.map_types:
-            keys, values = zip(*node.items)
-            keys = map(self._safeAssemble, keys)
-            values = map(self._safeAssemble, values)
-            return self.map_types[cls](zip(keys, values))
-        elif cls in self.oper_types:
+        if isinstance(node, ast.Tuple):
+            return tuple(self._safeAssemble(n) for n in node.elts)
+        if isinstance(node, ast.List):
+            return [self._safeAssemble(n) for n in node.elts]
+        if isinstance(node, ast.Dict):
+            return {
+                self._safeAssemble(k): self._safeAssemble(v)
+                for k, v in zip(node.keys, node.values)
+            }
+        if isinstance(node, ast.Name):
+            if node.id == "True":
+                return True
+            if node.id == "False":
+                return False
+            if node.id == "None":
+                return None
+            raise FitException("Parse002", node.id)
+        if isinstance(node, ast.UnaryOp) and isinstance(node.op, (ast.USub, ast.UAdd)):
+            value = self._safeAssemble(node.operand)
+            if isinstance(value, (int, float, complex)):
+                return -value if isinstance(node.op, ast.USub) else value
+            raise FitException("Parse003", self._legacyClassName(node))
+        if isinstance(node, ast.BinOp):
             left = self._safeAssemble(node.left)
             right = self._safeAssemble(node.right)
-            if type(left) == type(1.0j) or type(right) == type(1.0j):
-                return self.oper_types[cls](left, right)
-            else:
-                raise FitException, ("Parse001",)
-        elif cls == compiler.ast.Name:
-            result = self.builtin_consts.get(node.name, "?")
-            if result != "?":
-                return result
-            else:
-                raise FitException, ("Parse002", node.name)
-#                return node.name
-        else:
-            raise FitException, ("Parse003", cls)
+            if isinstance(node.op, (ast.Add, ast.Sub)):
+                if isinstance(left, complex) or isinstance(right, complex):
+                    return left + right if isinstance(node.op, ast.Add) else left - right
+                raise FitException("Parse001")
+            raise FitException("Parse003", self._legacyClassName(node.op))
+        raise FitException("Parse003", self._legacyClassName(node))
 
 ## Subclasses ##############################
 
@@ -187,7 +170,7 @@ class StringAdapter(TypeAdapter):
         if s is None: return None
         s1 = s.strip()
         if s1 == "": return "blank"
-        if s1 == u"": return "blank"
+        if s1 == "": return "blank"
         return s1
 typeAdapterTable["String"] = StringAdapter
 typeToAdapter[str] = StringAdapter
@@ -210,9 +193,8 @@ typeToAdapter[int] = IntAdapter
 
 class LongAdapter(TypeAdapter):
     def parse(self,s):
-        return long(s)
+        return int(s)
 typeAdapterTable["Long"] = LongAdapter
-typeToAdapter[long] = LongAdapter
 
 # Floating Point Type Adapter
 # Stuff for Floating Point Special Values
@@ -226,13 +208,13 @@ _big_endian = sys.byteorder == "big"
 
 # and define appropriate constants
 if(_big_endian): #pragma: no cover
-    Ind    = struct.unpack('d', '\xFF\xF8\x00\x00\x00\x00\x00\x00')[0]
-    NaN    = struct.unpack('d', '\xFF\xF8\x00\x00\x00\x00\x00\x01')[0]
-    PosInf = struct.unpack('d', '\x7F\xF0\x00\x00\x00\x00\x00\x00')[0]
+    Ind    = struct.unpack('d', b'\xFF\xF8\x00\x00\x00\x00\x00\x00')[0]
+    NaN    = struct.unpack('d', b'\xFF\xF8\x00\x00\x00\x00\x00\x01')[0]
+    PosInf = struct.unpack('d', b'\x7F\xF0\x00\x00\x00\x00\x00\x00')[0]
 else:
-    Ind    = struct.unpack('d', '\x00\x00\x00\x00\x00\x00\xf8\xff')[0]
-    NaN    = struct.unpack('d', '\x01\x00\x00\x00\x00\x00\xf8\xff')[0]
-    PosInf = struct.unpack('d', '\x00\x00\x00\x00\x00\x00\xf0\x7f')[0]
+    Ind    = struct.unpack('d', b'\x00\x00\x00\x00\x00\x00\xf8\xff')[0]
+    NaN    = struct.unpack('d', b'\x01\x00\x00\x00\x00\x00\xf8\xff')[0]
+    PosInf = struct.unpack('d', b'\x00\x00\x00\x00\x00\x00\xf0\x7f')[0]
 NegInf = -PosInf
 
 _floatSpecialValueDict = {
@@ -285,7 +267,7 @@ class FloatAdapter(TypeAdapter):
 
     def _stringEquals(self, a, b):
         self.value = a
-        parts = re.split(ur"(<=|<|>=|>|\+/-|\u00b1|\u2264|\u2265)", a)
+        parts = re.split(r"(<=|<|>=|>|\+/-|\u00b1|\u2264|\u2265)", a)
         parts = [x.strip() for x in parts]
         if len(parts) == 1:
             if self.checkOptions[0] == "f":
@@ -299,7 +281,7 @@ class FloatAdapter(TypeAdapter):
                 return self._objEquals(float(parts[0]), b)
             return self._appendCheck(a, b)
         if len(parts) == 3:
-            if parts[1] in ("+/-", u"\u00b1"):
+            if parts[1] in ("+/-", "\u00b1"):
                 return self._epsilonCheck(parts, b)
             return self._openRangeCheck(parts, b)
         elif len(parts) == 5:
@@ -347,11 +329,11 @@ class FloatAdapter(TypeAdapter):
     def _compare(self, a, op, b):
         if op == "<":
             return a < b
-        if op in ("<=", u"\u2264"):
+        if op in ("<=", "\u2264"):
             return a <= b
         if op == ">":
             return a > b
-        if op in (">=", u"\u2265"):
+        if op in (">=", "\u2265"):
             return a >= b
         raise FitException("invRangeExp", self.value) #pragma: no cover
         # ??? regex won't allow anything except the values above.
@@ -439,7 +421,7 @@ class BooleanAdapter(TypeAdapter):
         self._addToDict(name, "false", metaData, False)
 
     def _addToDict(self, name, mKey, metaData, value):
-        if metaData.has_key("%s.%s" % (name, mKey)) is False:
+        if ("%s.%s" % (name, mKey) in metaData) is False:
             return
         aList = metaData["%s.%s" % (name, mKey)]
         self._booleanTable = self._booleanTable.copy()
@@ -452,7 +434,7 @@ class BooleanAdapter(TypeAdapter):
     def parse(self, s):
         result = self._strToBool(s, None)
         if result not in (True, False):
-            raise FitException, ("BooleanValue", s)
+            raise FitException("BooleanValue", s)
         return result
 
     def _strToBool(self, value, default):
@@ -492,22 +474,22 @@ class DateAdapter(TypeAdapter):
         year = None
         #print "in DateAdapter.parse('%s') %s" % (aDate, aList)
         if len(aList) != 3:
-            raise FitException, "SmartDateFormatError"
+            raise FitException("SmartDateFormatError")
         for item in aList:
             if item.isalpha():
                 month = item
             elif item.isdigit() is False:
-                raise FitException, "SmartDateFormatError"
+                raise FitException("SmartDateFormatError")
             elif len(item) == 4:
                 year = int(item)
             elif 1 <= int(item) <= 31:
                 day = int(item)
             else:
-                raise FitException, "SmartDateFormatError"
+                raise FitException("SmartDateFormatError")
         #print "after breakout year: %s month: %s day: %s" % (
         #      year, month, day)
         if (year and month and day) is None:
-            raise FitException, "SmartDateFormatError"
+            raise FitException("SmartDateFormatError")
         month = monthTable.get(month[:3].lower())
         #print "after month lookup month: %s" % month
         aStr = "%04i %s %s" % (year, month, day)
@@ -598,4 +580,3 @@ class DictAdapter(ListAdapter):
 
 typeAdapterTable["Dict"] = DictAdapter
 typeToAdapter[dict] = DictAdapter
-

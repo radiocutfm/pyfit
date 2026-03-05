@@ -15,13 +15,6 @@ import fit.Fixture
 from fit.Options import Options
 from fit.SiteOptions import BatchBase
 from fit import Variations
-
-try:
-    False
-except:
-    True = 1
-    False = 0
-
 def makeFixtureLoaderTest():
     theSuite = makeSuite(Test_FixtureLoaderInitialization, 'test')
     theSuite.addTests([
@@ -32,7 +25,7 @@ def makeFixtureLoaderTest():
 
 class Test_FixtureLoaderInitialization(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def testInitialContentOfRememberedPackagesCache(self):
         obj = FixtureLoader()
@@ -40,7 +33,7 @@ class Test_FixtureLoaderInitialization(TestCase):
     
 class Test_FixtureLoader(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         self.options = Options(["FileRunner", "+v", "+e", "foo", "bar"],
                                BatchBase.parmDict)
         self.saveFitGlobal = (FitGlobal.RunOptions, FitGlobal.Options,
@@ -88,7 +81,7 @@ class Test_FixtureLoader(TestCase):
         self.obj.loadFixtureRenameTable(testList)
         assert len(self.obj._fixtureRenameTable) == 4
         dList = ["%s: %s" % (key, value) for key, value in 
-                    self.obj._fixtureRenameTable.items()]
+                    list(self.obj._fixtureRenameTable.items())]
         dList.sort()
         assert dList == testList
 
@@ -124,9 +117,9 @@ class Test_FixtureLoader(TestCase):
         loader = self.obj
         try:
             loader.loadFixture("FileRunner")
-        except FitException, e:
+        except FitException as e:
             isExc, doTrace, result = e.getMeaningfulMessage()
-            print result
+            print(result)
             if result == ('"FileRunner" was found, but it\'s not a fixture.'):
                 return
             raise
@@ -139,13 +132,13 @@ class Test_FixtureLoader(TestCase):
     def testTwoLevelModuleNameNoClassName(self):
         loader = self.obj
         fixture = loader.loadFixture("fit.Fixture")
-        print fixture
+        print(fixture)
         assert fixture is fit.Fixture.Fixture
 
     def testThreeLevelModuleNameNoClassName(self):
         loader = self.obj
         fixture = loader.loadFixture("fitLib.specify.DoFixtureUnderTest")
-        print fixture
+        print(fixture)
         assert issubclass(fixture, fit.Fixture.Fixture)
         assert fixture.__name__ == "DoFixtureUnderTest"
 
@@ -153,7 +146,7 @@ class Test_FixtureLoader(TestCase):
         loader = self.obj
         fixture = loader.loadFixture(
             "fitLib.specify.DoFixtureFlowUnderTest.MyColumnFixture")
-        print fixture
+        print(fixture)
         assert issubclass(fixture, fit.Fixture.Fixture)
         assert fixture.__name__ == "MyColumnFixture"
 
@@ -172,7 +165,7 @@ class MockAppConfigMapFixture(object):
 
 class TestFixtureLoaderWithAppExit(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         self.options = Options(["FileRunner", "+v", "+e", "foo", "bar"],
                                BatchBase.parmDict)
         self.saveFitGlobal = (FitGlobal.RunOptions, FitGlobal.Options,

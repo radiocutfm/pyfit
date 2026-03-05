@@ -14,7 +14,7 @@ class ArithmeticColumnFixture(ColumnFixture):
     def plus(self): return self.x + self.y
     def minus(self): return self.x - self.y
     def times(self): return self.x * self.y
-    def divide(self): return self.x / self.y
+    def divide(self): return self.x // self.y
     def floating(self): return float(self.x) / float(self.y)
     def sin(self): return math.sin(self.toRadians(self.x)) # let's see what the parameters are...
     def cos(self): return math.cos(self.toRadians(self.x))

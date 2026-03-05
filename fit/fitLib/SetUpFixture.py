@@ -10,13 +10,6 @@
 # and thus no expected columns.
 # It calls setUp() before processing the rest of the table.
 # It calls tearDown() afterwards.
-
-try:
-    False
-except:
-    False = 0
-    True = 0
-
 from fitLib.CalculateFixture import CalculateFixture
 from fitLib import ExtendedCamelCase
 
@@ -28,7 +21,7 @@ class SetUpFixture(CalculateFixture):
             self.setUp()
             CalculateFixture.doTable(self, table)
             self.tearDown()
-        except Exception, e:
+        except Exception as e:
             self.exception(table.at(0, 0, 0), e)
 
     def bind(self, headerRow):
@@ -43,7 +36,7 @@ class SetUpFixture(CalculateFixture):
         try:
             self.target = self.findMethod(methodName, self.argCount)
             self.boundOK = True
-        except Exception, e:
+        except Exception as e:
             self.exception(headerRow, e)
 
     def doRow(self, row):
@@ -58,7 +51,7 @@ class SetUpFixture(CalculateFixture):
 
         try:
             self.target.invoke(row.parts)
-        except Exception, e:
+        except Exception as e:
             self.exception(row.parts, e)
 
 

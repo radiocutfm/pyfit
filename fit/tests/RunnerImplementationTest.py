@@ -22,11 +22,6 @@ from tests.RunnerTestCommon import VirtualFileSystem, MockFileObject, \
 from fit.SiteOptions import BatchBase
 from fit.Utilities import em
 
-try:
-    False
-except: #pragma: no cover
-    True = 1
-    False = 0
 
 def makeRunnerImplementationTest():
     theSuite = makeSuite(TestRunnerImplementationInstantiation, 'test')
@@ -52,16 +47,16 @@ class ConsoleMessageHandlerMock(hi.ConsoleMessageHandler):
 
     def printStdErrMsgs(self):
         if len(self.errMsgList) == 0:
-            print "----------- no msgs on stderr -----------------"
+            print("----------- no msgs on stderr -----------------")
             return
-        print "---------------- msgs from stderr -----------------"
+        print("---------------- msgs from stderr -----------------")
         for msg in self.errMsgList:
-            print msg.rstrip()
-        print "---------------- end of messages ------------------"
+            print(msg.rstrip())
+        print("---------------- end of messages ------------------")
 
 class TestRunnerImplementationInstantiation(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         hi.conMsg = ConsoleMessageHandlerMock()
         hi.FileRunner.InjectedSetUpTearDownFileHandler = (
             hi.SetUpTearDownFileHandler)
@@ -75,7 +70,7 @@ class TestRunnerImplementationInstantiation(TestCase):
 
 class TestRunner(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         FixtureLoader.clearFixtureRenameTable()
         hi.conMsg = ConsoleMessageHandlerMock()
         hi.FileRunner.InjectedSetUpTearDownFileHandler = (
@@ -274,7 +269,7 @@ class TestRunner(TestCase):
         obj.run()
         newFile = FG.fsa._findFile("fat/Reports/BinaryChop.html")
         text = "".join(newFile[1])
-        print "file out: \n%s" % text
+        print("file out: \n%s" % text)
         assert text.find("fit.Summary") != -1
 
     def testParseError(self):
@@ -300,7 +295,7 @@ class TestRunner(TestCase):
         obj.run()
         newFile = FG.fsa._findFile("fat/Reports/BinaryChop.html")
         text = "".join(newFile[1])
-        print "file out: \n%s" % text
+        print("file out: \n%s" % text)
         assert text.find("fit.Comment") != -1
 
     def testParseOutput(self):
@@ -308,14 +303,14 @@ class TestRunner(TestCase):
         assert obj.parms(self.fakeParms_v)
         obj.run()
         newFile = FG.fsa._findFile("fat/Reports/BinaryChop.html")
-        print "output file: '%s'" % (newFile,)
+        print("output file: '%s'" % (newFile,))
 
     def testThatOutputFileCreated(self):
         obj = self.obj
         assert obj.parms(self.fakeParms_v)
         obj.run()
         newFile = FG.fsa._findFile("fat/Reports/BinaryChop.html")
-        print "output file: '%s'" % (newFile,)
+        print("output file: '%s'" % (newFile,))
 
     def testCreatingFileInUTF8Format(self):
         obj = self.obj
@@ -326,7 +321,7 @@ class TestRunner(TestCase):
         obj.run()
         newFile = FG.fsa._findFile("fat/Reports/BinaryChop.html")
         text = "".join(newFile[1])
-        print "output file: '%s'" % (newFile,)
+        print("output file: '%s'" % (newFile,))
         assert text.find("charset=utf-8") > -1
 
     def testInvokingFit(self):
@@ -334,7 +329,7 @@ class TestRunner(TestCase):
         assert obj.parms(self.fakeParms_v)
         obj.run()
         newFile = FG.fsa._findFile("fat/Reports/BinaryChop.html")
-        print "output file: '%s'" % (newFile,)
+        print("output file: '%s'" % (newFile,))
 
     def testListOfFilesAndRenameFileShouldBeInvalid(self):
         obj = self.obj
@@ -372,7 +367,7 @@ class TestRunner(TestCase):
 
         newFile = FG.fsa._findFile("fat/Reports/BinaryChop.html")
         text = "".join(newFile[1])
-        print "file out: \n%s" % text
+        print("file out: \n%s" % text)
         assert text.find("first") != -1
 
     def testMockFileOutput(self):        
@@ -443,7 +438,7 @@ class TestRunner(TestCase):
 
 class TestStatsHandler(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         hi.conMsg = ConsoleMessageHandlerMock()
         hi.stats = hi.StatProxy()
 
@@ -479,7 +474,7 @@ class TestStatsHandler(TestCase):
 
 class TestConsoleTotals(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())        
+        print('%s %s' % (self.id(), self.shortDescription()))        
         hi.conMsg = ConsoleMessageHandlerMock()
 
     def tearDown(self):
@@ -754,7 +749,7 @@ class Utilities(object):
         result = True
         for path in paths:
             if FG.fsa.exists(path): continue
-            print "--- in verExists. File or directory %s does not exist!" % path
+            print("--- in verExists. File or directory %s does not exist!" % path)
             result = False
         return result
 
@@ -762,7 +757,7 @@ class Utilities(object):
         result = True
         for path in paths:
             if not FG.fsa.exists(path): continue
-            print "--- in verNotExist. File or directory %s exists!" % path
+            print("--- in verNotExist. File or directory %s exists!" % path)
             result = False
         return result
 
@@ -770,13 +765,13 @@ class Utilities(object):
         result = True
         aFile = FG.fsa._findFile(path)
         if not aFile:
-            print "--- in verContains. File %s does not exist!" % path
+            print("--- in verContains. File %s does not exist!" % path)
             return False
         text = "".join(aFile[1])
         for item in items:
             aCount = text.count(item)
             if not aCount:
-                print "--- File %s does not contain %s" % (path, item)
+                print("--- File %s does not contain %s" % (path, item))
                 result = False
         return result
         
@@ -784,19 +779,19 @@ class Utilities(object):
         result = True
         aFile = FG.fsa._findFile(path)
         if not aFile:
-            print "--- in verDoesNotContain. File %s does not exist!" % path
+            print("--- in verDoesNotContain. File %s does not exist!" % path)
             return False
         text = "".join(aFile[1])
         for item in items:
             aCount = text.count(item)
             if aCount:
-                print "--- File %s contains %s" % (path, item)
+                print("--- File %s contains %s" % (path, item))
                 result = False
         return result
 
 class TestAllFilesInDirectory(TestCase, Utilities):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         hi.conMsg = ConsoleMessageHandlerMock()
         FG.fsa = VirtualFileSystem()
         FG.fsa._addDirectories("in/a", "in/a/b", "in/a/c", "out/a")
@@ -866,7 +861,7 @@ class TestAllFilesInDirectory(TestCase, Utilities):
 
 class ExamplesForListOfFiles(TestCase, Utilities):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         FixtureLoader.clearFixtureRenameTable()
         hi.conMsg = ConsoleMessageHandlerMock()
         FG.RunAppConfigModule = None
@@ -1074,7 +1069,7 @@ class BeforeTestExecutionExit(object):
 
 class TestHTMLRunner(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         FixtureLoader.clearFixtureRenameTable()
         hi.conMsg = ConsoleMessageHandlerMock()
         hi.FileRunner.InjectedSetUpTearDownFileHandler = (
@@ -1149,7 +1144,7 @@ class TestHTMLRunner(TestCase):
                        cssLink=None):
         textList = []
         if encoding.lower().startswith("utf") and useBom:
-            textList.append(u"\ufeff")
+            textList.append("\ufeff")
         if htmlTag: textList.append("<html>")
         if headTag: textList.append("<head>")
         if meta:
@@ -1370,7 +1365,7 @@ class TestDirectoryRunner(TestCase):
                   ]
 
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         FixtureLoader.clearFixtureRenameTable()
         hi.conMsg = ConsoleMessageHandlerMock()
         hi.FileRunner.InjectedSetUpTearDownFileHandler = (

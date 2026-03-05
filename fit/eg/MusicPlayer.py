@@ -78,7 +78,7 @@ class UnorderedListFixture(object):
         return tOrF
 
     def stringEquals(self, left, right):
-        if isinstance(left, types.StringTypes):
+        if isinstance(left, (str,)):
             left = self.parse(left)
         return self.equals(left, right)
 
@@ -91,8 +91,8 @@ class UnorderedListFixture(object):
     def _equals(self, left, right, errthing, depth):
 ##        em("\nin _equals depth: '%s' errthing: '%s' left: '%s' right: '%s'"
 ##           % (depth, errthing, left, right))
-        if (isinstance(left, types.StringTypes) and
-            isinstance(right, types.StringTypes)):
+        if (isinstance(left, (str,)) and
+            isinstance(right, (str,))):
             return (left == right), errthing
         if type(left) != type(right):
             return False, errthing
@@ -118,10 +118,10 @@ class UnorderedListFixture(object):
 
     def _buildLI(self, item, parts):
         parts.append("<li>")
-        if isinstance(item, types.StringTypes):
+        if isinstance(item, (str,)):
             parts.append(item)
-        elif isinstance(item, types.TupleType):
-            if isinstance(item[1], types.ListType):
+        elif isinstance(item, tuple):
+            if isinstance(item[1], list):
                 parts.append("%s: " % item[0])
                 self._buildUL(item[1], types)
             elif isinstance(item[1], TimeInSeconds):
@@ -206,13 +206,13 @@ class MusicLibrary(object):
 
     def totalIn(self, field, container):
         if field != "songs":
-            raise Exception, "Unsupported options"
+            raise Exception("Unsupported options")
         if container == "library":
             result = len(self._trackList)
         elif container == "selection":
             result = len(self._selectedList)
         else:
-            raise Exception, "Unsupported options"
+            raise Exception("Unsupported options")
         return result
 
     # !!! this may be obsolete since we added fieldsFrom to Song
@@ -414,7 +414,7 @@ class LoadJam(object):
 
 class TimeInSeconds(object):
     def __init__(self, seconds):
-        if not isinstance(seconds, types.StringTypes):
+        if not isinstance(seconds, (str,)):
             self._seconds = seconds
         elif seconds.find(":") > -1:
             parts = [int(x) for x in seconds.split(":")]

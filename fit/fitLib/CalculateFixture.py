@@ -3,13 +3,6 @@
 # copyrinht 2004 Rick Mugridge, University of Auckland, NZ
 # Released under the terms of the GNU General Public License version 2 or later.
 # Translation to Python Copyright 2005 John H. Roth Jr.
-
-try:
-    False
-except:
-    False = 0
-    True = 1
-
 from fit.FitException import FitException
 from fit.Utilities import em
 ##from fitLib.FitLibraryExceptions import MissingRowFailureException, \
@@ -94,7 +87,7 @@ class CalculateFixture(DoFixture):
                                                        self.exceptionString);
                 elif phase == 0:
                     argNames += " " + name
-            except Exception, e:
+            except Exception as e:
                 self.exception(heads, e)
                 return
             i += 1

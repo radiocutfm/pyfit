@@ -4,7 +4,7 @@
 
 from fit.ActionFixture import ActionFixture
 import time
-from Parse import Parse
+from .Parse import Parse
 
 class TimedActionFixture(ActionFixture):
 

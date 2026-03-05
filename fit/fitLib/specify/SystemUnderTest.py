@@ -6,13 +6,6 @@
 
 # NOTE - only the parts needed for the current tests are translated.
 # some of it may remain untranslated forever...
-
-try:
-    False
-except:
-    False = 0
-    True = 1
-
 from fit.Fixture import Fixture
 from fitLib.ArrayFixture import ArrayFixture
 from fitLib.FitLibraryExceptions import FitFailureException
@@ -95,7 +88,7 @@ class SystemUnderTest(object):
 
     _typeDict["anExceptionAction.types"] = ["Int"]
     def anExceptionAction(self):
-        raise FitFailureException, "testing" # Was Runtime Exception
+        raise FitFailureException("testing") # Was Runtime Exception
 
     _typeDict["value.types"] = [None, "Int"]
     def value(self, i):
@@ -115,7 +108,7 @@ class SystemUnderTest(object):
         return date
 
     def hiddenMethod(self):
-        raise FitFailureException, "testing"
+        raise FitFailureException("testing")
 
     _typeDict["anotherObject.types"] = ["$SUT"] # returns a fixture
     def anotherObject(self):

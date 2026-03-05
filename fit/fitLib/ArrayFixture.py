@@ -24,13 +24,6 @@
 
 # When running under DoFixture, metadata is inserted into
 # the ArrayFixture class object by MethodTarget.
-
-try:
-    False
-except:
-    False = 0
-    True = 1
-
 #import copy
 import types
 import sys
@@ -59,7 +52,7 @@ class ArrayFixture(RowFixtureBase):
     def doRows(self, rows):
         self.setActualCollection()
         if rows is None:
-            raise FitException, "MissingRowFailureException" # column heads missing
+            raise FitException("MissingRowFailureException") # column heads missing
         if not self.actuals and not rows.more:
             return
         if not self.actuals:
@@ -77,7 +70,7 @@ class ArrayFixture(RowFixtureBase):
             while rows is not None:
                 self.doOneRow(rows, self.adapters, self.actuals)
                 rows = rows.more
-        except Exception, e:
+        except Exception as e:
             self.exception(rows.leaf(), e)
             return
         
@@ -95,9 +88,9 @@ class ArrayFixture(RowFixtureBase):
 
         rowLength = row.parts.size()
         if rowLength < len(adapters):
-            raise FitException, "MissingCellsFailureException"
+            raise FitException("MissingCellsFailureException")
         if rowLength > len(adapters):
-            raise FitException, "ExtraCellsFailureException"
+            raise FitException("ExtraCellsFailureException")
         if actuals and self.matchRow(row.parts, adapters, actuals[0]):
             del actuals[0]
         else:

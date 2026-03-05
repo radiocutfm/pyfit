@@ -65,7 +65,7 @@ class AllFiles(Fixture):
             else:
                 self.wrong(cells.more)
                 cells.more.addToBody(tables.footnote())
-        except Exception, e:
+        except Exception as e:
             self.exception(cells, e)
         self.pop(path)
 

@@ -17,7 +17,7 @@ import traceback
 import types
 
 from fit.Counts import Counts
-from FitException import FitException
+from .FitException import FitException
 from fit import FitGlobal
 from fit.FitNesseExceptions import FitFailureException
 from fit.FixtureLoader import FixtureLoader
@@ -25,11 +25,6 @@ from fit import Variations
 from fit.Parse import Parse
 from fit.Utilities import em
 
-try:
-    False
-except: #pragma: no cover
-    True = 1
-    False = 0
 
 class RunTime(object):
     def getSystemTime(self):
@@ -164,7 +159,7 @@ class Fixture(object):
                 try:
                     fixture = self.getLinkedFixtureWithArgs(tables)
                     fixture.interpretTables(tables)
-                except Exception, e:
+                except Exception as e:
                     self.exception(heading, e)
                     self.listener.tableFinished(tables)
                     self._interpretFollowingTables(tables)
@@ -180,7 +175,7 @@ class Fixture(object):
             self.getArgsForTable(tables) # get them again for the new fixture object
             self.doTable(tables)
             self.listener.tableFinished(tables)
-        except Exception, ex:
+        except Exception as ex:
             self.exception(tables.at(0, 0, 0), ex)
             return
         self._interpretFollowingTables(tables)
@@ -196,7 +191,7 @@ class Fixture(object):
                 try:
                     fixture = self.getLinkedFixtureWithArgs(tables)
                     fixture.doTable(tables)
-                except Exception, e:
+                except Exception as e:
                     self.exception(heading, e)
             self.listener.tableFinished(tables)
             tables = tables.more
@@ -258,7 +253,7 @@ class Fixture(object):
         while cells:
             try:
                 self.doCell(cells, i)
-            except Exception, e:
+            except Exception as e:
                 self.exception(cells, e)
             i = i + 1
             cells=cells.more
@@ -310,7 +305,7 @@ class Fixture(object):
 
     def exception(self, cell, exception, color="ex"):
         doTrace = 1
-        if isinstance(exception, types.StringTypes):
+        if isinstance(exception, (str,)):
             isExc = 1
             doTrace = 0
             message = exception
@@ -464,7 +459,7 @@ class Fixture(object):
         return None
 
     def getSymbol(self, symbol):
-        if FitGlobal.testLevelSymbols.has_key(symbol):
+        if symbol in FitGlobal.testLevelSymbols:
             return FitGlobal.testLevelSymbols.get(symbol)
         return FitGlobal.RunLevelSymbols[symbol]
 

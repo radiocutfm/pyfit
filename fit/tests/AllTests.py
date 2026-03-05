@@ -55,5 +55,5 @@ def makeAllTests():
     return theSuite
 
 if __name__ == '__main__':
-    print "current directory: '%s'" % os.getcwd()
+    print("current directory: '%s'" % os.getcwd())
     unittest.main(defaultTest='makeAllTests')

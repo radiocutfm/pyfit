@@ -192,7 +192,7 @@ class DoFixtureFlowUnderTest(DoFixture):
 
     _typeDict["getException.types"] = [None]
     def getException(self):
-        raise FitException, "ForcedException"
+        raise FitException("ForcedException")
 
     _typeDict["anInteger.types"] = ["$SUT"]
     def anInteger(self):

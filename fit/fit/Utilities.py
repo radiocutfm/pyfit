@@ -10,7 +10,7 @@
 # console for debugging.
 
 import sys
-from types import StringTypes
+StringTypes = (str,)
 
 def em(msg): #pragma: no cover
     if msg[-1] != "\n":

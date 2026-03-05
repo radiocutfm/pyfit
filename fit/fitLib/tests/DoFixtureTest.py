@@ -6,13 +6,6 @@
 import unittest
 from fitLib.DoFixture import FlowFixture, DoFixture
 from fitLib.FitLibraryFixture import FitLibraryFixture
-
-try:
-    False
-except:
-    True = 1
-    False = 0
-
 def makeDoFixtureTest():
     theSuite = unittest.makeSuite(Test_DoFixture, 'test')
 #    theSuite.addTest(unittest.makeSuite(Test_FooBar, 'Test'))
@@ -20,7 +13,7 @@ def makeDoFixtureTest():
 
 class Test_DoFixture(unittest.TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def tearDown(self):
         pass

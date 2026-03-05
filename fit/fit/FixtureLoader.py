@@ -20,11 +20,6 @@ from fit.Utilities import em
 # avoid an import loop.
 import fit
 
-try:
-    False
-except: #pragma: no cover
-    True = 1
-    False = 0
 
 class FixtureLoader(object):    
     _fixtureRenameTable = {}
@@ -89,7 +84,7 @@ class FixtureLoader(object):
     def _doLoad(self, parts, pathToModule, className):
         try:
             result = __import__(pathToModule)
-        except ImportError, e:
+        except ImportError as e:
             msg = str(e)
             self.msgFromImportError = msg
             if msg.startswith("No module named "):

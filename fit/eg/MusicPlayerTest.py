@@ -7,13 +7,6 @@ import sys
 import unittest
 from eg.MusicPlayer import MusicPlayer, MusicLibrary, EnglishListFixture, \
      UnorderedListFixture, Song, TimeInSeconds, LoadJam
-
-try:
-    False
-except:
-    True = 1
-    False = 0
-
 def em(msg):
     if msg[-1] != "\n":
         msg += "\n"
@@ -38,7 +31,7 @@ def _verifyMetaDataExists(obj, methodName):
 
 class TestInstantiations(unittest.TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def testInstantiation(self):
         unused = MusicPlayer()
@@ -49,7 +42,7 @@ class TestInstantiations(unittest.TestCase):
 class TestLibraryMethods(unittest.TestCase):
     def setUp(self):
         self.musicPlayer = MusicPlayer()
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def testLoadCommand(self):
         obj = self.musicPlayer
@@ -76,7 +69,7 @@ class TestLibraryMethods(unittest.TestCase):
 class TestEnglishListFixture(unittest.TestCase):
     def setUp(self):
         self.fixture = EnglishListFixture()
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def testParse(self):
         fixture = self.fixture
@@ -106,7 +99,7 @@ class TestEnglishListFixture(unittest.TestCase):
 class TestUnorderedListFixture(unittest.TestCase):
     def setUp(self):
         self.fixture = UnorderedListFixture()
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def testParse(self):
         fixture = self.fixture
@@ -146,7 +139,7 @@ class TestUnorderedListFixture(unittest.TestCase):
 
 class TestSong(unittest.TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def testSong(self):
         __pychecker__ = "no-classattr no-objattrs"
@@ -167,7 +160,7 @@ class TestPlayerMethods(unittest.TestCase):
     def setUp(self):
         self.musicPlayer = MusicPlayer()
         self.musicPlayer.load("eg/music/music.txt")
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def testSelectTrack(self):
         obj = self.musicPlayer
@@ -285,7 +278,7 @@ class TestPlayerMethods(unittest.TestCase):
         assert _verifyMetaDataExists(obj, "display")
         obj.selectTrack(3)
         obj.findSame("album")
-        print obj.display(["artist", "year"])
+        print(obj.display(["artist", "year"]))
 
     def testVerify(self):
         obj = self.musicPlayer
@@ -294,7 +287,7 @@ class TestPlayerMethods(unittest.TestCase):
 
 class TestTimeInSeconds(unittest.TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def testInitInSeconds(self):
         tis = TimeInSeconds("59")
@@ -323,7 +316,7 @@ class TestTimeInSeconds(unittest.TestCase):
 
 class TestLoadJam(unittest.TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def testMessage(self):
         obj = LoadJam(None)

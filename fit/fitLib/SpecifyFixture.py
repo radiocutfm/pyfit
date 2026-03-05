@@ -7,13 +7,6 @@ import sys
 from fit.Fixture import Fixture
 from fit.Parse import Parse
 from fitLib import ParseUtility
-
-try:
-    False
-except:
-    True = 1
-    False = 0
-
 # Uses embedded tables to specify how fixtures work, based on
 # simple subclasses of those fixtures.
 

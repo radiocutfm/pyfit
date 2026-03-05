@@ -6,15 +6,16 @@
 # Last updated for Release 0.8a1
 #endLegalNotices
 
-from types import StringTypes
 from fit.Parse import Parse
 from fitnesse.fixtures.TableFixture import TableFixture
 from fit import TypeAdapter
 from fit.Utilities import em
 
+StringTypes = (str,)
+
 class Invoice(object):
     def __init__(self, **kwds):
-        for key, value in kwds.items():
+        for key, value in list(kwds.items()):
             setattr(self, key, value)
         self.lineItems = []
 
@@ -23,7 +24,7 @@ class Invoice(object):
 
 class LineItem(object):        
     def __init__(self, **kwds):
-        for key, value in kwds.items():
+        for key, value in list(kwds.items()):
             setattr(self, key, value)
 
 class Valid(object):
@@ -33,7 +34,7 @@ class Valid(object):
     def itemValid(self, boolean):
         self.valid = self.valid and boolean
 
-    def __nonzero__(self):
+    def __bool__(self):
         return self.valid
 
 class PosInteger(int):
@@ -46,17 +47,17 @@ class Currency(object):
         if isinstance(aString, StringTypes):
             parts = aString.strip().split(".")
             if len(parts) != 2:
-                raise ValueError, "Currency must have exactly one decimal point"
+                raise ValueError("Currency must have exactly one decimal point")
             invalid = [x for x in parts if not x.isdigit()]
             if invalid:
-                raise ValueError, "Currency must be digits"
+                raise ValueError("Currency must be digits")
             self.value = int(parts[0]) * 100 + int(parts[1])
         elif isinstance(aString, int):
             self.value = aString
         elif isinstance(aString, Currency):
             self.value = aString.value
         else:
-            raise TypeError, "Currency must be a string"
+            raise TypeError("Currency must be a string")
 
     def __add__(self, other):
         return Currency(self.value + other.value)
@@ -139,7 +140,7 @@ class StoreTable(TableFixture):
             if number < 1:
                 raise TypeError("must be greater than zero")
             self.right(cell)
-        except Exception, e:
+        except Exception as e:
             self.exception(cell, e)
             valid.itemValid(False)
             number = 1
@@ -150,7 +151,7 @@ class StoreTable(TableFixture):
         try:
             amount = Currency(cell.text())
             self.right(cell)
-        except Exception, e:
+        except Exception as e:
             self.exception(cell, e)
             valid.itemValid(False)
             amount = Currency(0)
@@ -228,7 +229,7 @@ class CheckTable1(TableFixture):
             if number < 1:
                 raise TypeError("must be greater than zero")
             self.right(cell)
-        except Exception, e:
+        except Exception as e:
             self.exception(cell, e)
             valid = False
             number = 1
@@ -248,7 +249,7 @@ class CheckTable1(TableFixture):
         try:
             amount = Currency(cell.text())
             self.right(cell)
-        except Exception, e:
+        except Exception as e:
             self.exception(cell, e)
             isValid = False
             amount = Currency(0)

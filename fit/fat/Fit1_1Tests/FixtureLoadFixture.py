@@ -26,7 +26,7 @@ class FixtureLoadFixture(ColumnFixture):
         try:
             self._loadFixture()
             return "(none)"
-        except Exception, e:
+        except Exception as e:
             return str(e)
         
 

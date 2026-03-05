@@ -16,9 +16,9 @@ class FixtureNameFixture(ColumnFixture):
     _typeDict["FixtureName"] = "String"    
     def FixtureName(self):
         tableParse = self._GenerateTableParse(self.Table)
-        print ("in FixtureNameFixture.FixtureName. "
+        print(("in FixtureNameFixture.FixtureName. "
                "input:\n'%s'\nresult:\n%s"
-               % (self.Table, tableParse.toNodeList()))
+               % (self.Table, tableParse.toNodeList())))
 #//      Fixture fixture = Fixture.
         
 #//      return loadFixture(GenerateTableParse(Table).text()).toString();

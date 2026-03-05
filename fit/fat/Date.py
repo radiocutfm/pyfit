@@ -3,13 +3,6 @@
 # May be used under the terms of the GNU general license, v2 or later.
 
 import time
-
-try:
-    False
-except:
-    True = 1
-    False = 0
-
 class Date:
     aTime = None
     def __init__(self, string):

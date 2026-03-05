@@ -3,8 +3,8 @@
 # Converted to Python 2003/07/24 by John Roth
 
 from fit.RowFixture import RowFixture
-import MusicLibrary
-from Music import Music
+from . import MusicLibrary
+from .Music import Music
 # !!! note that Browser must be invoked first: the other
 #     modules depend on it to create the interconnections.
 

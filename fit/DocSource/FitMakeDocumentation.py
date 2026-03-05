@@ -35,10 +35,10 @@ class Make:
                 htmFileName = os.path.join(htmPathName, htmDirList[j])
                 htmTime = os.stat(htmFileName)
                 if txtTime.st_mtime > htmTime.st_mtime:
-                    print "%s is being updated" % txtDirList[i]
+                    print("%s is being updated" % txtDirList[i])
                     os.system('html2 "%s" "%s"' % (txtFileName, htmFileName))
                 else:
-                    print "%s does not need to be updated" % txtDirList[i]
+                    print("%s does not need to be updated" % txtDirList[i])
                 i += 1
                 j += 1
             elif txtDirList[i] < htmDirList[j]:
@@ -46,11 +46,11 @@ class Make:
                     txtFileName = os.path.join(txtPathName, txtDirList[i])
                     txtRoot, txtExt = os.path.splitext(txtDirList[i])
                     htmFileName = os.path.join(htmPathName, txtRoot + ".htm")
-                    print "%s is a new module" % txtDirList[i]
+                    print("%s is a new module" % txtDirList[i])
                     os.system('html2 "%s" "%s"' % (txtFileName, htmFileName))
                 i += 1
             else:
-                print "%s is an obsolete module" % htmDirList[j]
+                print("%s is an obsolete module" % htmDirList[j])
                 j += 1
         while i < len(txtDirList):
             txtRoot, txtExt = os.path.splitext(txtDirList[i])
@@ -58,11 +58,11 @@ class Make:
                 txtFileName = os.path.join(txtPathName, txtDirList[i])
                 txtRoot, txtExt = os.path.splitext(txtDirList[i])
                 htmFileName = os.path.join(htmPathName, txtRoot + ".htm")
-                print "%s is a new module" % txtDirList[i]
+                print("%s is a new module" % txtDirList[i])
                 os.system('html2 "%s" "%s"' % (txtFileName, htmFileName))
             i += 1
         while j < len(htmDirList):
-            print "%s is an obsolete module" % htmDirList[j]
+            print("%s is an obsolete module" % htmDirList[j])
             j += 1
 
 if __name__ == "__main__":

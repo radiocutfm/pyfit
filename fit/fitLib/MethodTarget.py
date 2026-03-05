@@ -7,13 +7,6 @@
 # changes Copyright 2005 John H. Roth Jr.
 # Last updated for Release 0.8a1
 #endLegalStuff
-
-try:
-    False
-except:
-    False = 0
-    True = 1
-
 #import copy
 import inspect
 import types
@@ -48,7 +41,7 @@ class MethodTarget(object):
         self.method, self.field, self.metaData = self._getNamedMethod(
             name, numArgs, fixture, subject)
         if self.metaData is None:
-            raise Exception, "Unable to find metaData for '%s'" % name
+            raise Exception("Unable to find metaData for '%s'" % name)
         self.args = [None] * numArgs # filled in by _collectCell
         self.parameterAdapters = [None] * (numArgs + 1)
         self.types = [None] * (numArgs + 1)
@@ -64,9 +57,9 @@ class MethodTarget(object):
         i = 0
         while i < len(self.types):
             parm = self.metaData[i]
-            if isinstance(parm, types.StringTypes):
+            if isinstance(parm, (str,)):
                 result = parm
-            elif isinstance(parm, types.DictType):
+            elif isinstance(parm, dict):
                 result = parm.get(name)
             elif parm is None:
                 result = None
@@ -107,14 +100,14 @@ class MethodTarget(object):
                 return [None, True, [oldType]] # must be a field
             methodType = self._examineMethodType(method)
             if methodType in ("instancemethod", "staticmethod"):
-                actualNumArgs = method.func_code.co_argcount
+                actualNumArgs = method.__code__.co_argcount
                 if methodType == "staticmethod":
                     actualNumArgs += 1 # account for return parameter
                 if newType and len(newType) == actualNumArgs:
                     return [method, False, newType]
                 if not newType and oldType and actualNumArgs < 2:
                     return [method, False, oldType]
-                raise Exception, "Method and Metadata mismatch"
+                raise Exception("Method and Metadata mismatch")
             if methodType == "property":
                 if newType:
                     return (method, True, newType)
@@ -126,7 +119,7 @@ class MethodTarget(object):
 
     def _renameTo(self, typeDict, name, numArgs):
         newName = typeDict.get(name + ".RenameTo")
-        if type(newName) == types.DictType:
+        if type(newName) == dict:
             newName = newName.get(numArgs)
         if newName is not None:
             return newName
@@ -150,7 +143,7 @@ class MethodTarget(object):
     def _getResultTypeAdapter(self, subject, name, metaData):
         if metaData is None:
             result = None
-        elif isinstance(metaData, types.StringTypes) and metaData[0] == "$":
+        elif isinstance(metaData, (str,)) and metaData[0] == "$":
             result = None
         else:
             result = self._getTypeAdapter(subject, name, metaData)
@@ -200,7 +193,7 @@ class MethodTarget(object):
                 self.collectEverySecondCell(cells)
             else:
                 self.collectAllCells(cells)
-        except Exception, e:
+        except Exception as e:
             self.fixture.exception(cells, e)
             raise IgnoredException
         return self.invokeWithArgs(self.args)
@@ -236,7 +229,7 @@ class MethodTarget(object):
             if text != self.repeatString:
                 self.args[argNo] = (
                     self.parameterAdapters[argNo + 1].parse(cell)) # was text
-        except Exception, e:
+        except Exception as e:
             self.fixture.exception(cell, e)
             raise e
 
@@ -251,11 +244,11 @@ class MethodTarget(object):
                 return
         except IgnoredException:
             return
-        except FitFailureException, e:
+        except FitFailureException as e:
             # Temporary to see what's happening
 #            self.fixture.exception(expectedCell, e)
             return
-        except Exception, e:
+        except Exception as e:
             if exceptionExpected:
                 self.fixture.right(expectedCell)
             else:
@@ -270,7 +263,7 @@ class MethodTarget(object):
     def checkResult(self, expectedCell, result):
         try:
             if self.resultTypeAdapter is None:
-                raise FitFailureException, "No value provided"
+                raise FitFailureException("No value provided")
             toString = self.resultTypeAdapter.toString(result, expectedCell)
 #            toString = self.resultTypeAdapter.toString(result, result)
             expectedWithoutTags = expectedCell.text()
@@ -287,7 +280,7 @@ class MethodTarget(object):
                                  "cellParse", False)
                 self.fixture.wrong(expectedCell, toString,
                                    escape=shouldEscape)
-        except Exception, e:
+        except Exception as e:
             self.fixture.exception(expectedCell, e)
 
     def color(self, cells, right):

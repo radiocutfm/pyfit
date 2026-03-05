@@ -36,7 +36,7 @@ class ActionFixture(Fixture):
             return 
         try:
             method()
-        except Exception, e:
+        except Exception as e:
             self.exception(cells, e)
         
     ## Actions ##################################
@@ -48,7 +48,7 @@ class ActionFixture(Fixture):
         raiseIfNone(self.actor, "missingActor")
         try:
             adapter = TypeAdapter(self.actor, methodName)
-        except Exception, ex:
+        except Exception as ex:
             self.exception(cell, ex)
             raise FitException("IgnoreException")
         return adapter
@@ -62,7 +62,7 @@ class ActionFixture(Fixture):
         try:
             theClass = self.loadFixture(path)
             ActionFixture.actor = theClass()
-        except Exception, e:
+        except Exception as e:
             self.exception(methodNameCell, e)
 
     def enter_(self):
@@ -79,7 +79,7 @@ class ActionFixture(Fixture):
         try:
             adapter.invoke()
 ##            self.right(methodNameCell) # makes acc test fail.
-        except Exception, e:
+        except Exception as e:
             self.exception(methodNameCell, e)
 
     def check_(self):

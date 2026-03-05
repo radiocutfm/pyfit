@@ -25,6 +25,8 @@ def _isApplicationProtocol(aClass):
     parse = getattr(aClass, "parse", False)
     equals = getattr(aClass, "equals", False)
     toString = getattr(aClass, "toString", False)
+    if aClass.__module__ == "builtins":
+        return False
     return not(proto or parse or equals or toString)
 
 def _isAdapterProtocol(aClass):
@@ -32,4 +34,3 @@ def _isAdapterProtocol(aClass):
     equals = getattr(aClass, "equals", False)
     toString = getattr(aClass, "toString", False)
     return parse and equals and toString
-

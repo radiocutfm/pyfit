@@ -14,13 +14,6 @@ def em(msg):
 import unittest
 from fit.Parse import Parse
 from fitLib.FlowFixtureFixture import FlowFixtureFixture
-
-try:
-    False
-except:
-    True = 1
-    False = 0
-
 def makeFlowFixtureFixtureTest():
     theSuite = unittest.makeSuite(Test_FlowFixtureFixture, 'test')
 #    theSuite.addTest(unittest.makeSuite(Test_FooBar, 'Test'))
@@ -28,14 +21,14 @@ def makeFlowFixtureFixtureTest():
 
 class Test_FlowFixtureFixture(unittest.TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def testMakeEmbeddedTable(self):
         cells = self.td("", self.td("a", None))
         rows = self.tr(cells, None)
         table = Parse(tag="table", parts=rows)
         result = FlowFixtureFixture().makeEmbeddedRows(table.parts)
-        self.assertEquals("a", result.parts.parts.text())
+        self.assertEqual("a", result.parts.parts.text())
         assert result.more is None
         assert result.parts.more is None
         assert result.parts.parts.more is None
@@ -45,8 +38,8 @@ class Test_FlowFixtureFixture(unittest.TestCase):
         rows = self.tr(cells, None)
         table = Parse(tag="table", parts=rows)
         result = FlowFixtureFixture().makeEmbeddedRows(table.parts)
-        self.assertEquals("a", result.parts.parts.text())
-        self.assertEquals("b", result.parts.parts.more.text())
+        self.assertEqual("a", result.parts.parts.text())
+        self.assertEqual("b", result.parts.parts.more.text())
         assert result.more is None
         assert result.parts.more is None
         assert result.parts.parts.more.more is None
@@ -56,13 +49,13 @@ class Test_FlowFixtureFixture(unittest.TestCase):
         rows = self.tr(cells, self.tr(cells, None))
         tables = Parse(tags="table", parts=rows)
         resultingTable = FlowFixtureFixture().makeEmbeddedTables(tables)
-        self.assertEquals("a", resultingTable.parts.parts.text())
-        self.assertEquals("b", resultingTable.parts.parts.more.text())
+        self.assertEqual("a", resultingTable.parts.parts.text())
+        self.assertEqual("b", resultingTable.parts.parts.more.text())
         assert resultingTable.more is None
         assert resultingTable.parts.more is None
         assert resultingTable.parts.parts.more.more is None
         
-        self.assertEquals(tables.parts.parts.more, resultingTable.parts.parts)
+        self.assertEqual(tables.parts.parts.more, resultingTable.parts.parts)
 
     def tr(self, cells, more):
         return Parse(tag="tr", parts=cells, more=more)

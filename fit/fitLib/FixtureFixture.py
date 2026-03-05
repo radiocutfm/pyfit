@@ -17,13 +17,6 @@ from fit.Fixture import Fixture, Counts, RunTime
 from fit.Parse import Parse
 from fitLib.FitLibraryExceptions import FitFailureException, \
      IgnoredException
-
-try:
-    False
-except:
-    True = 1
-    False = 0
-
 REPORT = "report"
 INSERT_ROW = "I"
 
@@ -42,11 +35,11 @@ class FixtureFixture(Fixture):
     def doTable(self, table):
         try:
             Fixture.doTable(self, table)
-        except FitFailureException, ex:
+        except FitFailureException as ex:
             self.failure(table.at(0, 0, 0), ex.getMessage())
         except IgnoredException:
             pass
-        except Exception, ex:
+        except Exception as ex:
             self.exception(table.at(0,0,0), ex)
 
     def doRows(self, givenRows):
@@ -116,7 +109,7 @@ class FixtureFixture(Fixture):
 
     def getFirstEmbeddedRow(self, cells):
         if cells is None:
-            raise FitFailureException, "Embedded fixture is missing"
+            raise FitFailureException("Embedded fixture is missing")
         if cells.text() == "fixture" and cells.more is not None:
             return Parse(tag="tr", body="", parts=cells.more)
         else:
@@ -138,12 +131,12 @@ class FixtureFixture(Fixture):
                 fixture = self.loadFixture(heading.text())()
 #            except ClassNotFoundException, ex:
 #                self.failure(heading, ": Unknown Class");
-            except Exception, e:
+            except Exception as e:
                 self.exception(heading, e)
                 return
             try:
                 self.runFixture(tables, fixture)
-            except Exception, e:
+            except Exception as e:
                 self.exception(heading, e)
 
     def runFixture(self, tables, fixture):

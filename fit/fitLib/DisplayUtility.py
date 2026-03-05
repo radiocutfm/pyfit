@@ -3,13 +3,6 @@
 # copyright 2005, John H. Roth Jr.
 # Released under the terms of the GNU General Public License, Version 2 or later.
 # See license.txt for conditions and exclusion of all warrenties.
-
-try:
-    False
-except:
-    False = 0
-    True = 1
-
 import sys
 import types
 from fit.Fixture import Fixture
@@ -89,7 +82,7 @@ class DisplayUtility(Fixture):
                 i += 1
                 continue
             converted = False
-            if not isinstance(ta, types.BooleanType):
+            if not isinstance(ta, bool):
                 try:
                     result = ta.toString(field)
                     converted = True
@@ -114,8 +107,8 @@ class DisplayUtility(Fixture):
         return Parse(tag="tr", parts=head.more)
 
     def extractAttr(self, anObj, aName):
-        if isinstance(anObj, types.DictType):
-            if anObj.has_key(aName):
+        if isinstance(anObj, dict):
+            if aName in anObj:
                 return anObj[aName], True
             else:
                 return None, False

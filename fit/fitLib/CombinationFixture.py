@@ -18,7 +18,7 @@ class CombinationFixture(CalculateFixture):
     def bind(self, row):
         try:
             self.method = self.findMethod("combine", 2)
-        except Exception, e:
+        except Exception as e:
             self.exception(row, e)
             return
 
@@ -29,7 +29,7 @@ class CombinationFixture(CalculateFixture):
                 self.topValues.append(None)
                 obj = self.method.parameterAdapters[2].parse(heads)
                 self.topValues[-1] = obj
-            except Exception, e:
+            except Exception as e:
                 self.exception(heads, e)
                 self.methodOK = False
             heads = heads.more
@@ -54,7 +54,7 @@ class CombinationFixture(CalculateFixture):
                 self.method.checkResult(cell, result)
                 cell = cell.more
                 i += 1
-        except Exception, e:
+        except Exception as e:
             self.exception(cell, e)
             self.methodOK = False
 

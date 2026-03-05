@@ -31,7 +31,7 @@ class ConstraintFixture(CalculateFixture):
             self.target.setRepeatAndExceptionString(self.repeatString, # ???
                                                self.exceptionString)
             self.methodOK = True
-        except Exception, e:
+        except Exception as e:
             self.exception(row, e)
             return
 
@@ -53,6 +53,6 @@ class ConstraintFixture(CalculateFixture):
                 self.right(row)
             else:
                 self.wrong(row)
-        except Exception, e:
+        except Exception as e:
             self.exception(row.parts, e)
 

@@ -16,11 +16,6 @@ from fit import InitEnvironment
 from fit.Parse import Parse, ParseException
 from fit.Utilities import em
 
-try:
-    False
-except: #pragma: no cover
-    True = 1
-    False = 0
 
 def makeParseTest():
     theSuite = makeSuite(TestParse, 'test')
@@ -29,12 +24,12 @@ def makeParseTest():
 
 class TestParse(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def testParseException(self):
         try:
             unused = Parse("leader<table><tr><th>one</th><th>two</th><th>three</th></tr><tr><td>four</td></tr></table>trailer")
-        except ParseException, e:
+        except ParseException as e:
             assert e.offset == 17
             assert e.message == "Can't find tag: td"
             assert str(e) == "Can't find tag: td, 17"
@@ -44,7 +39,7 @@ class TestParse(TestCase):
     def testMissingEndTag(self):
         try:
             unused = Parse("leader<table><tr><td>one</th></tr></table>trailer")
-        except ParseException, e:
+        except ParseException as e:
             assert e.offset == 17
             assert e.message == "Can't find tag: td"
             assert str(e) == "Can't find tag: td, 17"
@@ -60,9 +55,9 @@ class TestParse(TestCase):
             trailer = tree.trailer[:5]
         else:
             trailer = id(tree.more)
-        print "%s %s | %s | %s | %s | %s" % (id(tree), tree.leader[:5],
+        print("%s %s | %s | %s | %s | %s" % (id(tree), tree.leader[:5],
                                              tree.tag, body, tree.end,
-                                             trailer)
+                                             trailer))
         if tree.parts is not None:
             self._printParseTree(tree.parts)
         if tree.more is not None:
@@ -85,7 +80,7 @@ class TestParse(TestCase):
         text = ("leader<table><tr><td><table><tr><td>body1</td></tr>trailer")
         try:
             unused = Parse(text)
-        except ParseException, e:
+        except ParseException as e:
             assert str(e) == "Can't find tag: table, 0"
             return
         self.fail("expected exception not thrown")
@@ -155,13 +150,13 @@ class TestParse(TestCase):
         assert newText == text
 
     def testToPrintUnicode(self):
-        text = (u"leader<table><tr><td><table><tr><td>body1</td></tr></table>"
-                u"<table><tr><td>body2</td></tr></table></td></tr></table>"
-                u"trailer")
+        text = ("leader<table><tr><td><table><tr><td>body1</td></tr></table>"
+                "<table><tr><td>body2</td></tr></table></td></tr></table>"
+                "trailer")
         p = Parse(text)
         newText = p.toPrint()
         assert newText == text
-        assert isinstance(newText, types.StringType)
+        assert isinstance(newText, bytes)
 
     def testToString(self):
         text = ("leader<table><tr><td><table><tr><td>body1</td></tr></table>"
@@ -182,9 +177,9 @@ class TestParse(TestCase):
         assert newText == text
 
     def testStrBuiltinUnicodeException(self):
-        text = (u"leader<table><tr><td><table><tr><td>\x90body1</td></tr></table>"
-                u"<table><tr><td>body2</td></tr></table></td></tr></table>"
-                u"trailer")
+        text = ("leader<table><tr><td><table><tr><td>\x90body1</td></tr></table>"
+                "<table><tr><td>body2</td></tr></table></td></tr></table>"
+                "trailer")
         p = Parse(text)
         try:
             unused = str(p)
@@ -193,8 +188,8 @@ class TestParse(TestCase):
         self.fail("expected exception not thrown")
 
     def testToList(self):
-        text = (u"<table><tr><td>One</td></tr>"
-                u"<tr><td>Two</td></tr></table>")
+        text = ("<table><tr><td>One</td></tr>"
+                "<tr><td>Two</td></tr></table>")
         p = Parse(text)
         aList = p.parts.toList()
         assert len(aList) == 2
@@ -252,7 +247,7 @@ class TestParse(TestCase):
 
 class FitNesseSpecificTests(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         self.saveEnv = FitGlobal.Environment
         FitGlobal.Environment = "FitNesse"
 

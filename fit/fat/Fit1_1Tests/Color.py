@@ -17,7 +17,7 @@ class Color(PrimitiveFixture):
         table = self.getSymbol("Table")
         self.actualRow = table.parts
         if rows.size() != self.actualRow.size():
-            raise Exception, "wrong size table"
+            raise Exception("wrong size table")
         Fixture.doRows(self, rows)
 
     def doRow(self, row):

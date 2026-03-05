@@ -12,11 +12,6 @@ from fit import taProtocol as taPro
 from fit.taProtocol import *
 from fit.taTable import typeAdapterTable as tat
 
-try:
-    False
-except: #pragma: no cover
-    True = 1
-    False = 0
 
 def makeProtocolTest():
     theSuite = unittest.makeSuite(TestBasicProtocolForString, 'test')
@@ -38,7 +33,7 @@ class TestBasicProtocolForString(unittest.TestCase):
         self.ta = tat["String"](self, "aStringVar", "String")
         self.pro = taPro.getProtocolFor(self.ta)
         self.cell = Parse(tag="td", body="spam")
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def testProtocolForStringAdapter(self):
         assert isinstance(self.pro, taPro.BasicProtocol)
@@ -61,7 +56,7 @@ class TestBasicProtocolForInt(unittest.TestCase):
         self.ta = tat["Integer"](self, "anIntVar", "Integer")
         self.pro = taPro.getProtocolFor(self.ta)
         self.cell = Parse(tag="td", body="1")
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def testProtocolForIntAdapter(self):
         assert isinstance(self.pro, taPro.ProtocolBase)
@@ -83,7 +78,7 @@ class TestDefaultProtocol(unittest.TestCase):
         self.ta = FakeDefaultTypeAdapter()
         self.pro = taPro.getProtocolFor(self.ta)
         self.cell = Parse(tag="td", body="1")
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def testProtocolForDefaultAdapter(self):
         assert isinstance(self.pro, taPro.BasicProtocol)
@@ -113,7 +108,7 @@ class TestEditedStringProtocolForFloat(unittest.TestCase):
         self.ta = tat["Float"](self, "aFloatVar", "Float", metaData={})
         self.pro = taPro.getProtocolFor(self.ta)
         self.cell = Parse(tag="td", body="3.14")
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def testProtocolForFloatAdapter(self):
         assert isinstance(self.pro, taPro.EditedStringProtocol)
@@ -146,7 +141,7 @@ class TestRawStringProtocol(unittest.TestCase):
         self.ta = FakeRawStringTypeAdapter()
         self.pro = taPro.getProtocolFor(self.ta)
         self.cell = Parse(tag="td", body="<tag you're=it>")
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def testProtocolForRawStringAdapter(self):
         assert isinstance(self.pro, taPro.RawStringProtocol)
@@ -176,7 +171,7 @@ class TestRawStringIntProtocol(unittest.TestCase):
         self.ta = FakeRawStringIntTypeAdapter()
         self.pro = taPro.getProtocolFor(self.ta)
         self.cell = Parse(tag="td", body="1")
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def testProtocolForRawStringAdapter(self):
         assert isinstance(self.pro, taPro.RawStringProtocol)
@@ -214,13 +209,13 @@ class TestCellAccessProtocol(unittest.TestCase):
         self.ta = DummyFloatCellTypeAdapter()
         self.pro = taPro.getProtocolFor(self.ta)
         self.cell = Parse(tag="td", body="1.0")
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def _checkFitException(self, callable, parms, expected):
         try:
             callable(*parms)
             self.fail("No Exception Raised")
-        except FitException, e:
+        except FitException as e:
             result = e.getMeaningfulMessage()
             if result[2] != expected:
                 self.fail("unexpected message in exception: '%s'" % result[2])
@@ -255,7 +250,7 @@ class TestApplicationProtocolForState(unittest.TestCase):
         self.ta = PrimitiveState
         self.pro = taPro.getProtocolFor(self.ta)
         self.cell = Parse(tag="td", body="fi")
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def testProtocolForPrimitiveState(self):
         assert isinstance(self.pro, taPro.ApplicationProtocol)
@@ -277,7 +272,7 @@ class TestBasicProtocolCompatability(unittest.TestCase):
         self.ta = tat["String"](self, "aStringVar", "String")
         self.pro = taPro.getProtocolFor(self.ta)
         self.cell = Parse(tag="td", body="spam")
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def testProtocolForStringAdapter1(self):
         assert isinstance(self.pro, taPro.BasicProtocol)
@@ -300,7 +295,7 @@ class TestEditedStringProtocolCompatability(unittest.TestCase):
         self.ta = tat["Float"](self, "aFloatVar", "Float", metaData={})
         self.pro = taPro.getProtocolFor(self.ta)
         self.cell = Parse(tag="td", body="3.14")
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def testProtocolForFloatAdapter(self):
         assert isinstance(self.pro, taPro.EditedStringProtocol)
@@ -323,7 +318,7 @@ class TestApplicationProtocolCompatability(unittest.TestCase):
         self.ta = ScientificFloat
         self.pro = taPro.getProtocolFor(self.ta)
         self.cell = Parse(tag="td", body="2.798")
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def testProtocolForPrimitiveState(self):
         assert isinstance(self.pro, taPro.ApplicationProtocol)
@@ -345,13 +340,13 @@ class TestInvalidProtocolThrowsException(unittest.TestCase):
     def setUp(self):
         self.ta = ScientificFloat
         self.cell = Parse(tag="td", body="2.798")
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         
     def _checkFitException(self, callable, parms, expected):
         try:
             callable(*parms)
             self.fail("No Exception Raised")
-        except FitException, e:
+        except FitException as e:
             result = e.getMeaningfulMessage()
             if result[2] != expected:
                 self.fail("unexpected message in exception: '%s'" % result[2])
@@ -370,15 +365,15 @@ class PrimitiveState(object):
         if self._stateDict.get(stateName) is not None:
             self._stateName = stateName
         else:
-            raise Exception, "invalid state"
+            raise Exception("invalid state")
 
     def __eq__(self, other):
-        if isinstance(other, types.StringTypes):
+        if isinstance(other, (str,)):
             return self._stateName == other
         return self._stateName == other._stateName
 
     def __ne__(self, other):
-        if isinstance(other, types.StringTypes):
+        if isinstance(other, (str,)):
             return self._stateName != other
         return self._stateName != other._stateName
 

@@ -8,13 +8,6 @@ import unittest
 from fit.Parse import Parse
 import fitLib.ParseUtility
 ParseUtility = fitLib.ParseUtility
-
-try:
-    False
-except:
-    True = 1
-    False = 0
-
 def makeParseUtilityTest():
     theSuite = unittest.makeSuite(Test_ParseUtility, 'test')
 #    theSuite.addTest(unittest.makeSuite(Test_FooBar, 'Test'))
@@ -36,7 +29,7 @@ class Test_ParseUtility(unittest.TestCase):
     	"</body></html>")
 
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         self._tables = Parse(self.html)
         self._setUp = Parse(self.setUpHtml)
         self._tearDown = Parse(self.tearDownHtml)
@@ -84,11 +77,11 @@ class Test_ParseUtility(unittest.TestCase):
 
     
     def _assertEquals(self, expected, tables2):
-        self.assertEquals(expected, ParseUtility.toString(tables2))
+        self.assertEqual(expected, ParseUtility.toString(tables2))
 
     def testFixHeader(self):
         result = ParseUtility.removeHeader(self._tables)
-        self.assertEquals("<html><title>table</title><body>", result)
+        self.assertEqual("<html><title>table</title><body>", result)
         self._assertEquals("t1<table><tr><td>Test</td></tr></table>t2"
                 "t3<table><tr><td>Test</td></tr></table>t4"
                 "</body></html>", self._tables)
@@ -157,7 +150,7 @@ class Test_ParseUtility(unittest.TestCase):
 
     def testCopyParseNone(self):
         newTree = ParseUtility.copyParse(None)
-        self.assertEquals(newTree, None)
+        self.assertEqual(newTree, None)
         
         
         

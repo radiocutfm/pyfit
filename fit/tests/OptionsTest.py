@@ -15,13 +15,6 @@ from fit import SiteOptions
 from fit.Utilities import em
 
 __pychecker__ = "no-objattrs"
-
-try:
-    False
-except:
-    True = 1
-    False = 0
-
 def makeOptionsTest():
     theSuite = unittest.makeSuite(Test_OptionsInstantiation, 'test')
     theSuite.addTest(unittest.makeSuite(TestOptions, 'test'))
@@ -29,7 +22,7 @@ def makeOptionsTest():
 
 class Test_OptionsInstantiation(unittest.TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def testInstantiation(self):
         optList = ["FileRunner.py", "-a", "+bc"]
@@ -38,7 +31,7 @@ class Test_OptionsInstantiation(unittest.TestCase):
 
 class TestOptions(unittest.TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     optList1 = ["TestRunner.py", "-v"]
 ##    optxxxTable1 = {"v": ["bx", "verbose"],
@@ -154,7 +147,7 @@ class TestOptions(unittest.TestCase):
         optList = ["FileRunner.py", "-a", "AppModule.py",
                    "-b", "foo", "-v", "+b", "bar"]
         obj = Options(optList, SiteOptions.BatchBase.parmDict)
-        print dir(obj)
+        print(dir(obj))
         self.obj = obj
         assert obj.appConfigurationModule == "AppModule.py"
         assert obj.appConfigurationParms == ["foo", "bar"]
@@ -164,7 +157,7 @@ class TestOptions(unittest.TestCase):
         optList = ["NotARunner.py", "-a", "AppModule.py",
                    "-b", "foo", "-v", "+b", "bar"]
         obj = Options(optList, SiteOptions.BatchBase.parmDict)
-        print dir(obj)
+        print(dir(obj))
         self.obj = obj
         assert obj.appConfigurationModule == "AppModule.py"
         assert obj.appConfigurationParms == ["foo", "bar"]
@@ -172,19 +165,19 @@ class TestOptions(unittest.TestCase):
 
     def tearDown(self):
         obj = self.obj
-        print SiteOptions.BatchBase.parmDict.keys()
-        print SiteOptions.TestRunner.parmDict.keys()
+        print(list(SiteOptions.BatchBase.parmDict.keys()))
+        print(list(SiteOptions.TestRunner.parmDict.keys()))
         if not obj.eMsgs and not obj.vMsgs:
-            print "--- No messages ---"
+            print("--- No messages ---")
         else:
             if obj.eMsgs:
-                print "------ Error Messages  ------"
+                print("------ Error Messages  ------")
                 for msg in obj.eMsgs:
-                    print msg
+                    print(msg)
             if obj.vMsgs:
-                print "---- Validation Messages ----"
+                print("---- Validation Messages ----")
                 for msg in obj.vMsgs:
-                    print msg
+                    print(msg)
 
 if __name__ == '__main__':
     unittest.main(defaultTest='makeOptionsTest')

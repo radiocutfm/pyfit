@@ -18,13 +18,6 @@ from fit import TypeAdapter as ta
 from fit import taBase as tab
 from fit.Utilities import em
 from fit import Variations
-
-try:
-    False
-except:
-    True = 1
-    False = 0
-
 def makeColumnFixtureTest():
     suite = makeSuite(OldBindExamples, 'should')
     suite.addTest(makeSuite(ExtendedLabelExitExamples, "should"))
@@ -83,7 +76,7 @@ class Context(TestCase):
         return rows
 
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         self.options = Options(["FileRunner", "+v", "+e", "foo", "bar"],
                                BatchBase.parmDict)
         self.saveFitGlobal = (FitGlobal.RunOptions, FitGlobal.Options,

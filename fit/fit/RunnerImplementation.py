@@ -31,11 +31,6 @@ python FileRunner [options] in-file out-file [rename-file]
 """
 
 
-try:
-    False
-except: #pragma: no cover
-    False = 0
-    True = 1
 
 try:
     bool(0)
@@ -118,6 +113,8 @@ class ConsoleMessageHandler(object): #pragma: no cover
         sys.stderr.write(msg)
 
     def write(self, msg):
+        if msg == "":
+            return
         self.err(msg)
 
 conMsg = ConsoleMessageHandler()
@@ -154,6 +151,8 @@ class SetUpTearDownFileHandler(object):
         return text
 
     def _parseText(self, text):
+        if isinstance(text, bytes):
+            text = text.decode("latin-1")
         return Parse(text)
 
 class NullSetupFileHandler(SetUpTearDownFileHandler):
@@ -261,7 +260,7 @@ class StatNode(object):
         parts.append("%s</counts>\n" % indent)
 
     def outputSummary(self, parts, unused, indent):
-        items = self.summary.items()
+        items = list(self.summary.items())
         items.sort()
         parts.append("%s<summary>\n" % indent)
         for key, value in items:
@@ -287,20 +286,18 @@ class StatCollector(object):
         # XXX did I forget something - like the final counts?
         parts = ['<?xml version="1.0"?>\n',
                  "<testResults><Name>%s</Name>\n" % self._statFileName]
-        dirs = self.dirs.items()
+        dirs = list(self.dirs.items())
         dirs.sort()
         for dirName, fileDir in dirs:
             parts.append("  <Directory>\n"
                          "    <Name>%s</Name>\n" % dirName)
-            files = fileDir.items()
+            files = list(fileDir.items())
             files.sort()
             for fileName, fileObj in files:
                 fileObj.outputAsXML(parts, "    ")
             parts.append("  </Directory>\n")
         parts.append("</testResults>\n")
-        xmlText = "".join(parts)
-        outText = xmlText.encode("UTF-8")
-        return outText
+        return "".join(parts)
 
     def writeXMLFile(self):
         outPath = FG.fsa.join(self._outDirName, self._statFileName)
@@ -442,7 +439,7 @@ class ParmEditStatus(object):
             self.status = False
         return self
 
-    def __nonzero__(self):
+    def __bool__(self):
         return self.status
 
 class FileRunner(RunnerUtilities):
@@ -869,11 +866,11 @@ class HTMLRunner(object):
             self.parseTree = self.getParseTree(self.inFileName)
             self.parseTree = stack.wrapParseTree(self.parseTree)
             stack.pop()
-        except Exception, e:
+        except Exception as e:
             FG.appConfigInterface("beforeTestExecution",
                                         FG.inFileName, e)
             conMsg.err("Unexpected Exception in parsing %s" % FG.inFileName)
-            print "Unexpected Exception in parsing %s" % FG.inFileName
+            print("Unexpected Exception in parsing %s" % FG.inFileName)
             exType, exInfo, exTrace = sys.exc_info()
             traceback.print_exception(exType, exInfo, exTrace,
                                       None, sys.stdout)
@@ -936,11 +933,13 @@ class HTMLRunner(object):
     def _decodeText(self, text):
         encoding = ""
         encodingType = ""
-        if text[:3] == "\xef\xbb\xbf":
+        if isinstance(text, str):
+            text = text.encode("latin-1")
+        if text[:3] == b"\xef\xbb\xbf":
             encoding, encodingType = "utf-8", "BOM"
-        elif text[:2] in ("\xfe\xff", "\x00<"):
+        elif text[:2] in (b"\xfe\xff", b"\x00<"):
             encoding, encodingType = "utf-16be", "BOM"
-        elif text[:2] in ("\xff\xfe", "<\x00"):
+        elif text[:2] in (b"\xff\xfe", b"<\x00"):
             encoding, encodingType = "utf-16le", "BOM"
 ## !!! Python doesn't support utf-32 at the 2.3 level.
 ##        elif text[:4] in ("\xff\xfe\x00\x00", "<\x00\x00\x00"):
@@ -958,7 +957,7 @@ class HTMLRunner(object):
         self.encoding = encoding
         self.encodingType = encodingType
         decodedText = text.decode(encoding) # needs a try/except block.
-        if decodedText[0] == u"\ufeff":
+        if decodedText[0] == "\ufeff":
             decodedText = decodedText[1:]
         return decodedText
 
@@ -967,6 +966,8 @@ class HTMLRunner(object):
                         "[\"\'][ ]*/?>", re.I)
 
     def _encodingFromMetaTag(self, text):
+        if isinstance(text, bytes):
+            text = text.decode("latin-1", "ignore")
         lc = text.lower()
         match = self.metaRE.search(lc)
         if match is None:
@@ -980,9 +981,9 @@ class HTMLRunner(object):
 
     def write(self, textOut, encoding):
         isUtf = encoding.lower().startswith("utf")
-        hasBom = (textOut[0] == u"\ufeff")
+        hasBom = (textOut[0] == "\ufeff")
         if isUtf and not hasBom:
-            textOut = u"\ufeff" + textOut
+            textOut = "\ufeff" + textOut
         elif (not isUtf and hasBom): #pragma: no cover #shouldn't be possible
             textOut = textOut[1:]
         text = textOut.encode(encoding)

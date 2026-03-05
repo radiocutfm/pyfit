@@ -7,13 +7,6 @@
 # changes Copyright 2005 John H. Roth Jr.
 # Last updated for Release 0.8a1
 #endLegalStuff
-
-try:
-    False
-except:
-    False = 1
-    True = 0
-
 from fitLib.SetUpFixture import SetUpFixture
 
 class SetUpFixtureUnderTest2(SetUpFixture):
@@ -27,7 +20,7 @@ class SetUpFixtureUnderTest2(SetUpFixture):
         # ??? not sure what this is doing - check the AT
         __pychecker__ = 'no-argsused'
         if not self.setup:
-            raise Exception, "setUp() wasn't called."
+            raise Exception("setUp() wasn't called.")
 
     def tearDown(self):
-        raise Exception, "teardown"
+        raise Exception("teardown")

@@ -14,11 +14,6 @@ from fit.FitException import FitException
 from fit import FitGlobal
 from fit.Utilities import em
 
-try:
-    False
-except: #pragma: no cover
-    True = 1
-    False = 0
 
 # These labels are in the process of being moved from Fixture.
 # They are still here until several fixtures that use them for
@@ -162,7 +157,7 @@ class VariationsBase(object):
         while i < len(name):
             if ord(name[i]) > 127:
                 coded = "0000" + hex(ord(name[i])).upper()
-                if isinstance(name, types.UnicodeType):
+                if isinstance(name, str):
                     coded = "u"+coded[-4:]
                 else: #pragma: no cover
                     coded = "x"+coded[-2:]
@@ -172,7 +167,7 @@ class VariationsBase(object):
         return name
 
     def _handleKeywords(self, word):
-        if self._keywords.has_key(word):
+        if word in self._keywords:
             return word + "_"
         return word
 
@@ -245,10 +240,10 @@ class VariationsBase(object):
         "|": " bar ",
         "~": " tilde ",
         # Currency symbols likely to be found in English tests
-        u"\u00a2": " cent ",
-        u"\u00a3": " pound ",
-        u"\u00a5": " yen ",
-        u"\u20ac": " euro ",
+        "\u00a2": " cent ",
+        "\u00a3": " pound ",
+        "\u00a5": " yen ",
+        "\u20ac": " euro ",
         }
 
     def right(self):

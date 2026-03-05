@@ -8,7 +8,6 @@
 # Last updated for Release 0.8a1
 #endLegalStuff
 
-import compiler
 import copy
 import inspect
 #import math
@@ -36,11 +35,8 @@ from fit.taProtocol import getProtocolFor
 from fit.taTable import typeAdapterTable, _isApplicationProtocol, \
      typeToAdapter, _isAdapterProtocol, cellHandlerTable as CHT
 
-try:
-    False
-except: #pragma: no cover
-    True = 1
-    False = 0
+StringTypes = (str,)
+
 
 ## Factory ##################################
 
@@ -82,7 +78,7 @@ def on(instance, name, metaData = None, owner = None,
        targetClass = None, accClass = None):
     __pychecker__ = "no-noeffect" # or below; doesn't seem to work.
     if instance is None and targetClass is None and metaData is None:
-        raise FitException, ('BadParm001',)
+        raise FitException('BadParm001',)
     if instance is not None and targetClass is None:
         targetClass = instance.__class__
     if metaData is None:
@@ -99,7 +95,7 @@ def on(instance, name, metaData = None, owner = None,
         if FitGlobal.appConfigInterface("canDefaultMissingMetadata") is True:
             typeName = "Default"
         else:
-            raise FitException, ("NoTypeInfo", name,
+            raise FitException("NoTypeInfo", name,
                                  targetClass and targetClass.__name__)
 
     # ----------------- end metadata extraction ------------------------
@@ -177,7 +173,7 @@ def _getTypeAdapter(instance, varName, metaData = {}):
         metaData = instance._typeDict
         typeName = metaData.get(varName)
     if typeName is None:
-        raise FitException, ("NoTypeInfo", varName, theClass.__name__)
+        raise FitException("NoTypeInfo", varName, theClass.__name__)
     return _acquireTypeAdapter(instance, varName, typeName, metaData)
 
 # ------------------------
@@ -207,8 +203,10 @@ def _acquireTypeAdapter(instance, identifier, typeName, metaData):
         else:
             taClass = typeName
             typeName = taClass.__class__.__name__
-            strType = repr(taClass.__class__)
-            raiseIf(strType[1:5] == "type", "UnknownType", typeName)
+            is_adapter_instance = _isAdapterProtocol(taClass.__class__)
+            is_app_instance = _isApplicationProtocol(taClass.__class__)
+            raiseIf(not (is_adapter_instance or is_app_instance),
+                    "UnknownType", typeName)
 
     if inspect.isclass(taClass):
         if issubclass(taClass, TypeAdapter):
@@ -274,8 +272,8 @@ def _getAccessor(instance, name, owner, targetClass):
                                     owner, targetClass)
     else:
         theObj = getattr(targetClass, name, None)
-        if type(theObj) == MethodType:
-            numArgs = theObj.func_code.co_argcount
+        if inspect.isfunction(theObj) or inspect.ismethod(theObj):
+            numArgs = theObj.__code__.co_argcount
             if numArgs == 1: # must be getter
                 theAccessor = GetMethodAccessor(instance, name,
                                               owner, targetClass)
@@ -283,7 +281,7 @@ def _getAccessor(instance, name, owner, targetClass):
                 theAccessor = SetMethodAccessor(instance, name,
                                               owner, targetClass)
             else:
-                raise FitException, ("WrongNumberOfParameters", name, targetClass.__name__)
+                raise FitException("WrongNumberOfParameters", name, targetClass.__name__)
         else:
             theAccessor = FieldAccessor(instance, name,
                                       owner, targetClass)
@@ -348,7 +346,7 @@ class CheckResult(object):
     def __str__(self):
         return "CheckResult: No data to report"
 
-    def __nonzero__(self):
+    def __bool__(self):
         return self.resultType == "right"
 
 class CheckResult_DoNothing(CheckResult):
@@ -366,7 +364,7 @@ class CheckResult_ParseOK(CheckResult):
     def isRight(self):
         return True
 
-    def __nonzero__(self):
+    def __bool__(self):
         return True
 
 class CheckResult_Right(CheckResult):
@@ -610,7 +608,7 @@ class AccessorBaseClass(object):
                 result = self.parse(cell)
                 self.set(result)
                 exc = CheckResult_ParseOK()
-            except Exception, e:
+            except Exception as e:
                 exc = CheckResult_Exception(e)
             exc.parseResult = result
             exc.value = result
@@ -651,7 +649,7 @@ class AccessorBaseClass(object):
             self.set(result)
             exc = CheckResult_Wrong(str(result),
                                escape=True) # was shouldEscape, comes from nowhere.
-        except Exception, e:
+        except Exception as e:
             exc = CheckResult_Exception(e)
             exc = self._checkTypeAndMsg(exc, excClass, excMsg)
         checkResult = self._applyFailLevels(numFailLevels, exc)
@@ -674,7 +672,7 @@ class AccessorBaseClass(object):
         return NEXT, None
     
     def equals(self, cell, obj):
-        if not isinstance(cell, (Parse, types.StringTypes)):
+        if not isinstance(cell, (Parse, (str,))):
             return self.protocol.equals(cell, obj)
         # !!! these two are only used by FitLibrary, so we bypass cell handlers
         #     next release we make cell handlers use Cell Access.
@@ -767,7 +765,7 @@ class AccessorBaseClass(object):
             else:
                 checkResult = CheckResult_Wrong(self.toString(result),
                                    escape=shouldEscape)
-        except Exception, e:
+        except Exception as e:
             checkResult = CheckResult_Exception(e)
         self._applyFailLevels(numFailLevels, checkResult)
         checkResult.value = result
@@ -804,7 +802,7 @@ class AccessorBaseClass(object):
                     self.equals(newCell, result)
                     exc = CheckResult_Wrong(self.toString(result),
                                        escape="shouldEscape")
-                except Exception, e:
+                except Exception as e:
                     exc = CheckResult_Exception(e)
                     exc = self._checkTypeAndMsg(exc, excClass, excMsg)
         if exc is None:
@@ -832,7 +830,7 @@ class AccessorBaseClass(object):
         result = None
         try:
             result = self.get()
-        except Exception, e:
+        except Exception as e:
             return True, CheckResult_Exception(e), None
         return False, None, result
 
@@ -852,11 +850,31 @@ class AccessorBaseClass(object):
         result = exc
         if excClass is not None and exc.exc.__class__.__name__ != excClass:
             exc.__class__ = CheckResult_ExceptionWrong
-        elif (excMsg is not None and exc.actual != excMsg):
-            exc.__class__ = CheckResult_ExceptionWrong
+        elif excMsg is not None:
+            actual = self._normalizeExceptionMessage(exc.actual)
+            expected = self._normalizeExceptionMessage(excMsg)
+            if actual != expected and expected not in actual and actual not in expected:
+                exc.__class__ = CheckResult_ExceptionWrong
+            else:
+                result = CheckResult_Right()
         else:
             result = CheckResult_Right()
         return result
+
+    _intLiteralRE = re.compile(r"^invalid literal for int\(\)(?: with base \d+)?:\s*(.*)$")
+    _quotedRE = re.compile(r"""^(['"])(.*)\1$""")
+
+    def _normalizeExceptionMessage(self, message):
+        text = str(message).strip()
+        match = self._intLiteralRE.match(text)
+        if match is None:
+            return text
+
+        bad_value = match.group(1).strip()
+        quoted = self._quotedRE.match(bad_value)
+        if quoted is not None:
+            bad_value = quoted.group(2)
+        return "invalid literal for int(): %s" % bad_value
 
     _failChanges = {"CheckResult_Wrong": (CheckResult_Right, CheckResult_Wrong),
                     "CheckResult_Right": (CheckResult_Wrong, CheckResult_Right),
@@ -889,13 +907,10 @@ class FieldAccessor(AccessorBaseClass):
         return getattr(self.target, self.name)
 
     def set(self, value):
-        # XXX: We need ISO8859-1 in order to test Fierro correclty
-        if type(value) == type(u""):
-            value = value.encode('latin-1')
         setattr(self.target, self.name, value)
 
     def invoke(self):
-        raise FitException, ("InvokeField",)
+        raise FitException("InvokeField",)
 
 class GetMethodAccessor(AccessorBaseClass):
     def __init__(self, instance, name, owner, targetClass):

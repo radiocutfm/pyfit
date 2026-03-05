@@ -28,7 +28,7 @@ class DotGraphic(object):
     _dot = ""
 
     def __init__(self, aString):
-        if isinstance(aString, types.StringTypes):
+        if isinstance(aString, (str,)):
             self._dot = aString
         elif isinstance(aString, LocalFile.LocalFile):
             self._dot = self.getFileContents(aString) # XXX feature envy!

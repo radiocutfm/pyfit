@@ -5,13 +5,6 @@
 
 import unittest
 from fitnesse.fixtures.ColumnFixtureTestFixture import ColumnFixtureTestFixture
-
-try:
-    False
-except:
-    True = 1
-    False = 0
-
 def makeColumnFixtureTestFixtureTest():
     theSuite = unittest.makeSuite(Test_ColumnFixtureTestFixture, 'Test')
 #    theSuite.addTest(unittest.makeSuite(SpecifyFoo, 'Test'))
@@ -19,7 +12,7 @@ def makeColumnFixtureTestFixtureTest():
 
 class Test_ColumnFixtureTestFixture(unittest.TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def Test_it(self):
         obj = ColumnFixtureTestFixture()
