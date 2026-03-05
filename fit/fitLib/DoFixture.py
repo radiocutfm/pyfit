@@ -439,8 +439,8 @@ class DoFixture(FlowFixture):
 
 #	/** Is overridden in subclass SequenceFixture to process arguments differently
     def findMethodByActionName(self, cells, numArgs):
-        parms = numArgs / 2 + 1
-        args = (numArgs + 1) / 2
+        parms = numArgs // 2 + 1
+        args = (numArgs + 1) // 2
         name = cells.text()
         i = 1
         while (i < parms):
