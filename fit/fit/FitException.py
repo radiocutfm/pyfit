@@ -6,9 +6,10 @@
 # Last updated for Release 0.8a1
 #endLegalStuff
 
-from types import StringTypes
 from fit import FitGlobal
 from fit.Utilities import FitEnum
+
+StringTypes = (str,)
 
 def exceptionIfNone(test, *exceptionParms):
     if test is None:

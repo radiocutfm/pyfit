@@ -14,11 +14,6 @@ import re
 import types
 from fit.Utilities import FitEnum
 
-try:
-    False
-except: #pragma: no cover
-    True = 1
-    False = 0
 
 class Count(FitEnum):
     _numList = ("right", "wrong", "ignore", "exception")
@@ -28,10 +23,10 @@ class Counts(object):
     countsPattern = re.compile(r"(\d+)[^,]*, (\d+)[^,]*, (\d+)[^,]*, (\d+)[^,]*")
     def __init__(self, right = 0, wrong = 0, ignored = 0, exceptions = 0):
         self.countType = "SingleTest"
-        if isinstance(right, types.StringTypes):
+        if isinstance(right, (str,)):
             matcher = self.countsPattern.search(right)
             if matcher is None:
-                raise Exception, "invalid parameters to Counts"
+                raise Exception("invalid parameters to Counts")
             self.right = int(matcher.group(1))
             self.wrong = int(matcher.group(2))
             self.ignores = int(matcher.group(3))
@@ -65,14 +60,14 @@ class Counts(object):
         elif kind == "ignore": self.ignores += 1
         elif kind == "exception": self.exceptions += 1
         else:
-            raise TypeError, "Count Enumeration expected"
+            raise TypeError("Count Enumeration expected")
 
     def __str__(self):
         return ("%s right, %s wrong, %s ignored, %s exceptions" %
                 (self.right, self.wrong, self.ignores, self.exceptions))
 
     def __eq__(self, o):
-        if isinstance(o, types.StringTypes):
+        if isinstance(o, (str,)):
             o = Counts(o)
         elif not isinstance(o, Counts):
             return NotImplemented

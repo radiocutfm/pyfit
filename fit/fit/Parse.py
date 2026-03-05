@@ -101,19 +101,19 @@ class Parse(object):
         else:
             self._body = body
     def _getBody(self):
-        if isinstance(self._body, types.StringTypes):
+        if isinstance(self._body, (str,)):
             return self._body
         return ""
     body = property(_getBody, _setBody)
 
     def _setParts(self, parts):
         if parts is None:
-            if isinstance(self._body, types.StringTypes): return
+            if isinstance(self._body, (str,)): return
             self._body = None
         else:
             self._body = parts
     def _getParts(self):
-        if isinstance(self._body, types.StringTypes):
+        if isinstance(self._body, (str,)):
             return None
         return self._body
     parts = property(_getParts, _setParts)
@@ -246,8 +246,7 @@ class Parse(object):
         s = Parse._convertNbspToSpace(s)
         s = s.strip()
         s = Parse.unescape(s)
-        # XXX: We need ISO8859-1 in order to test Fierro correclty
-        return s.encode('latin-1')
+        return s
     htmlToText = staticmethod(htmlToText)
 
     br1re = re.compile(r"<\s*br\s*/?\s*>", flags = re.I)
@@ -302,10 +301,10 @@ class Parse(object):
             s = s.replace('\x91', "'")
             s = s.replace('\x92', "'");
         else:
-            s = s.replace(u'\u201c', u'"')
-            s = s.replace(u'\u201d', u'"')
-            s = s.replace(u'\u2018', u"'")
-            s = s.replace(u'\u2019', u"'");
+            s = s.replace('\u201c', '"')
+            s = s.replace('\u201d', '"')
+            s = s.replace('\u2018', "'")
+            s = s.replace('\u2019', "'");
         return s
     _unescapeSmartQuotes = staticmethod(_unescapeSmartQuotes)
 
@@ -327,20 +326,20 @@ class Parse(object):
     def _convertNbspToSpace(s):
         if type(s) == type(""):
             s = s.replace(chr(160), ' ')
-            s = s.replace("\\u00a0", unichr(160))
+            s = s.replace("\\u00a0", chr(160))
         else:
-            s = s.replace(unichr(160), u' ')
-            s = s.replace(u"\\u00a0", unichr(160))
+            s = s.replace(chr(160), ' ')
+            s = s.replace("\\u00a0", chr(160))
         s = s.replace("&nbsp;", " ")
         return s
     _convertNbspToSpace = staticmethod(_convertNbspToSpace)
 
     def _xPrint(aString, label): #pragma: no cover
         bString = aString
-        if isinstance(aString, types.UnicodeType):
+        if isinstance(aString, str):
             bString = aString.encode("Windows-1252", "replace")
-        print "%s. Original text: '%s'" % (label, bString)
-        print "--- hex equivalent: '%s'" % Parse._xhex(bString)
+        print("%s. Original text: '%s'" % (label, bString))
+        print("--- hex equivalent: '%s'" % Parse._xhex(bString))
     _xPrint = staticmethod(_xPrint)
 
     def _xencode(aString): #pragma: no cover
@@ -361,7 +360,7 @@ class Parse(object):
 
     def addGreenLabel(self, actual):
         if actual is None: return
-        if not isinstance(actual, types.StringTypes):
+        if not isinstance(actual, (str,)):
             actual = str(actual)
         self.addToBody(self.greenlabel("expected") + "<hr>" +
                        self.escape(actual) + self.greenlabel("actual"))
@@ -374,7 +373,7 @@ class Parse(object):
 
     def addRedLabel(self, actual, escape=True):
         if actual is None: return
-        if not isinstance(actual, types.StringTypes):
+        if not isinstance(actual, (str,)):
             actual = str(actual)
         if escape:
             actual = self.escape(actual)
@@ -452,7 +451,7 @@ class Parse(object):
     def _concat(self, a, b):
         if type(a) == type(b):
             result = a + b
-        elif isinstance(a, types.StringType):
+        elif isinstance(a, bytes):
             result = a.decode("latin-1") + b
         else:
             result = a + b.decode("latin-1")
@@ -475,9 +474,9 @@ class Parse(object):
         
     def toPrint(self):
         s = self.toString()
-        if isinstance(s, types.UnicodeType):
+        if isinstance(s, str):
             s = s.encode("utf-8")
-        return s
+        return ParseBytes(s)
 
     #public void print(PrintWriter out) {
     # str() always returns an 8-bit string. This bites!
@@ -494,6 +493,7 @@ class Parse(object):
             s += str(self.more)
         else:
             s += self.trailer
+        s.encode("ascii")
         return s
 
     def toNodeList(self):
@@ -510,9 +510,9 @@ class Parse(object):
                                                   node.end, more))
             printList.append(line)
             i += 1
-        print "in __repr__ len(printList): '%s'" % len(printList)
+        print("in __repr__ len(printList): '%s'" % len(printList))
         joined = "\n".join(printList)
-        print " --- # of newlines: '%s'" % joined.count("\n")
+        print(" --- # of newlines: '%s'" % joined.count("\n"))
         return joined
 
     def _nodeNum(self, nextNode, aString, resultList):
@@ -563,3 +563,15 @@ class Parse(object):
         return "<a href='%s'>[%s]</a>" % (html, thisFootnote)
 
     __call__ = toString
+
+
+class ParseBytes(bytes):
+    def __new__(cls, value):
+        if isinstance(value, str):
+            value = value.encode("utf-8")
+        return super(ParseBytes, cls).__new__(cls, value)
+
+    def __eq__(self, other):
+        if isinstance(other, str):
+            return self.decode("utf-8") == other
+        return super(ParseBytes, self).__eq__(other)

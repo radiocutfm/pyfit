@@ -23,11 +23,6 @@ from fit.taTable import typeAdapterTable as tat
 from tests.TestCommon import FitTestCommon
 from fit.Utilities import em
 
-try:
-    False
-except: #pragma: no cover
-    True = 1
-    False = 0
 
 OK = "ok"
 NEXT = "next"
@@ -248,7 +243,7 @@ class TestUtilities(FitTestCommon):
 
 class SpecifyTypeAdapter(TestUtilities):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         setupFitGlobalForTests("Batch")
 
     def tearDown(self):
@@ -304,7 +299,7 @@ class SpecifyTypeAdapter(TestUtilities):
         assert obj.equals(20 , 20), "equals test"
         assert obj.stringEquals("10", 10), "string equals test 1"
         # definition of stringEquals changed 0.7a1
-        self.failIf(obj.stringEquals(15, "15"), "string equals test 2")
+        self.assertFalse(obj.stringEquals(15, "15"), "string equals test 2")
         assert obj.toString(35) == "35", "toString test"
         assert obj.equals(20, 42) is False, "equals test - False"
         assert obj.stringEquals("999", 987) is False, "string equals test - False"
@@ -318,7 +313,7 @@ class SpecifyTypeAdapter(TestUtilities):
         assert obj.equals(20 , 20), "equals test"
         assert obj.stringEquals("10", 10), "string equals test 1"
         # definition of stringEquals changed 0.7a1
-        self.failIf(obj.stringEquals(15, "15"), "string equals test 2")
+        self.assertFalse(obj.stringEquals(15, "15"), "string equals test 2")
         assert obj.toString(35) == "35", "toString test"
         assert obj.equals(20, 42) is False, "equals test - False"
         assert obj.stringEquals("999", 987) is False, "string equals test - False"
@@ -432,7 +427,7 @@ class SpecifyTypeAdapter(TestUtilities):
         for a,b, expected in [("10.0 +/- .1", 10.01, True),
                               ("10.0 +/- .1", 10.15, False),
                               ("-10.0 +/- -.1", -10.05, True),
-                              (u"10.0 \u00b1 .1", 10.15, False),
+                              ("10.0 \u00b1 .1", 10.15, False),
                               ]:
             self._floatingPrecisionStringEquals(a, b, expected, "bFloatVar")
 
@@ -443,17 +438,17 @@ class SpecifyTypeAdapter(TestUtilities):
                                ("9.9 <= x <= 10.1", 10.0, True),
                                ("9.7 <= x <= 9.9", 10.0, False),
                                ("10.1 <= x <= 10.3", 10.0, False),
-                               (u"10.1 \u2264 x  \u2264 10.3", 10.2, True),
-                               (u"10.1 < x \u2264 10.3", 10.2, True),
-                               (u"10.1 <= x \u2264 10.3", 10.2, True),
-                               (u"10.1 \u2264 x  < 10.3", 10.2, True),
-                               (u"10.1 \u2264 x  <= 10.3", 10.2, True),
+                               ("10.1 \u2264 x  \u2264 10.3", 10.2, True),
+                               ("10.1 < x \u2264 10.3", 10.2, True),
+                               ("10.1 <= x \u2264 10.3", 10.2, True),
+                               ("10.1 \u2264 x  < 10.3", 10.2, True),
+                               ("10.1 \u2264 x  <= 10.3", 10.2, True),
                                ("10.3 > x > 10.1", 10.2, True),
-                               (u"10.3 \u2265 x \u2265 10.1", 10.2, True),
-                               (u"10.3 > x \u2265 10.1", 10.2, True),
-                               (u"10.3 >= x \u2265 10.1", 10.2, True),
-                               (u"10.3 \u2265 x > 10.1", 10.2, True),
-                               (u"10.3 \u2265 x >= 10.1", 10.2, True),
+                               ("10.3 \u2265 x \u2265 10.1", 10.2, True),
+                               ("10.3 > x \u2265 10.1", 10.2, True),
+                               ("10.3 >= x \u2265 10.1", 10.2, True),
+                               ("10.3 \u2265 x > 10.1", 10.2, True),
+                               ("10.3 \u2265 x >= 10.1", 10.2, True),
                                ]:
             self._floatingPrecisionStringEquals(a, b, expected, "bFloatVar")
 
@@ -600,7 +595,7 @@ class SpecifyTypeAdapter(TestUtilities):
 
 class SpecifyAccessor(TestUtilities):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         setupFitGlobalForTests("Batch")
         
     def tearDown(self):
@@ -677,7 +672,7 @@ class SpecifyAccessor(TestUtilities):
         assert isinstance(Accessor, TypeAdapter.AccessorBaseClass), "check instance"
         assert Accessor.get() == 1, "check get method"
         Accessor.set("42")
-        print instance.anIntVar
+        print(instance.anIntVar)
         assert instance.anIntVar == "42", "check set method"
         self._checkFitException(Accessor.invoke, (), "You can't invoke a field!")
         assert Accessor.parse("33") == 33, "check parse proxy method"
@@ -934,7 +929,7 @@ class SpecifyAccessor(TestUtilities):
 
 class SpecifyCellHandlerManagement(TestUtilities):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         setupFitGlobalForTests("Batch")
         TypeAdapter.restoreDefaultCellHandlerList()
 
@@ -1141,7 +1136,7 @@ class SpecifyCellHandlerManagement(TestUtilities):
 
 class SpecifyExceptionCellHandlerParameterParsing(TestUtilities):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         setupFitGlobalForTests("Batch")
         TypeAdapter.restoreDefaultCellHandlerList()
 
@@ -1167,7 +1162,7 @@ class SpecifyExceptionCellHandlerParameterParsing(TestUtilities):
 
 class SpecifyCheckResult(TestUtilities):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         setupFitGlobalForTests("Batch")
 
     def tearDown(self):
@@ -1275,7 +1270,7 @@ class SpecifyCheckResult(TestUtilities):
     def testCheckResultExceptionWithNoTrace(self):
         try:
             raise FitException("missingActorNameCell")
-        except FitException, exc:
+        except FitException as exc:
             obj = TA.CheckResult_Exception(exc)
         assert not obj.isRight()
         assert str(obj).find("CheckResult_Exception") > -1
@@ -1291,7 +1286,7 @@ class SpecifyCheckResult(TestUtilities):
     def testCheckResultExceptionWithTrace(self):
         try:
             raise FitException("WrongValueForTypeAdapter")
-        except FitException, exc:
+        except FitException as exc:
             obj = TA.CheckResult_Exception(exc)
         assert not obj.isRight()
         assert str(obj).find("CheckResult_Exception") > -1
@@ -1307,7 +1302,7 @@ class SpecifyCheckResult(TestUtilities):
     def testCheckResultExceptionWithIgnore(self):
         try:
             raise FitException("IgnoreException")
-        except FitException, exc:
+        except FitException as exc:
             obj = TA.CheckResult_Exception(exc)
         assert not obj.isRight()
         assert str(obj) == "CheckResult: Do Nothing object"
@@ -1323,7 +1318,7 @@ class SpecifyCheckResult(TestUtilities):
     def testCheckResultExceptionRightWithTrace(self):
         try:
             raise FitException("WrongValueForTypeAdapter")
-        except FitException, exc:
+        except FitException as exc:
             obj = TA.CheckResult_Exception(exc)
         obj.__class__ = TA.CheckResult_ExceptionRight
         assert obj.isRight()
@@ -1340,7 +1335,7 @@ class SpecifyCheckResult(TestUtilities):
     def testCheckResultExceptionWrongWithTrace(self):
         try:
             raise FitException("WrongValueForTypeAdapter")
-        except FitException, exc:
+        except FitException as exc:
             obj = TA.CheckResult_Exception(exc)
         obj.__class__ = TA.CheckResult_ExceptionWrong
         assert not obj.isRight()
@@ -1357,7 +1352,7 @@ class SpecifyCheckResult(TestUtilities):
     def testCheckResultExceptionWrongWithNoTrace(self):
         try:
             raise FitException("InvokeField")
-        except FitException, exc:
+        except FitException as exc:
             obj = TA.CheckResult_Exception(exc)
         obj.__class__ = TA.CheckResult_ExceptionWrong
         assert not obj.isRight()
@@ -1375,7 +1370,7 @@ class SpecifyCheckResult(TestUtilities):
 
 class SpecifyDefaultTypeAdapter(TestUtilities):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         setupFitGlobalForTests("Batch")
 
     def tearDown(self):
@@ -1477,7 +1472,7 @@ class SpecifyDefaultTypeAdapter(TestUtilities):
 
 class specifyMapTypeAdapterExit(TestUtilities):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         setupFitGlobalForTests("Batch")
 
     def tearDown(self):
@@ -1515,7 +1510,7 @@ class specifyMapTypeAdapterExit(TestUtilities):
 
 class specifyAcquireAdapterForType(TestUtilities):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         setupFitGlobalForTests("Batch")
 
     def tearDown(self):

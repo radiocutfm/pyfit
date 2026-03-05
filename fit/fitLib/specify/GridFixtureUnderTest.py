@@ -8,13 +8,6 @@ from fitLib.DoFixture import DoFixture
 from fitLib.GridFixture import GridFixture
 from fitLib.ImageFixture import ImageFixture, ImageNameGraphic, GraphicTypeAdapter
 from fitLib.ListTree import ListTree, TreeTypeAdapter
-
-try:
-    False
-except:
-    False = 0
-    True = 1
-
 class GridFixtureUnderTest(DoFixture):
     _typeDict = {}
 

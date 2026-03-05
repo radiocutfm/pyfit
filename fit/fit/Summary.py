@@ -17,7 +17,7 @@ class Summary(Fixture):
 
     def doTable(self, table):
         self.summary[self.countsKey] = self.counts
-        table.parts.more = self.rows(self.summary.keys())
+        table.parts.more = self.rows(list(self.summary.keys()))
 
     def rows(self, keys):
         keys.sort()

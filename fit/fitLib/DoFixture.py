@@ -11,13 +11,6 @@
 # These two Java classes have been included in the same
 # module to avoid clutter. Notice that Python does not have
 # abstract classes; FlowFixture is a real class.
-
-try:
-    False
-except:
-    False = 0
-    True = 1
-
 import inspect
 # import new
 import types
@@ -77,7 +70,7 @@ class FlowFixture(FitLibraryFixture):
                 pass
             else:
                 self.doTable(table)
-        except Exception, e:
+        except Exception as e:
             self.exception(table.at(0, 0, 0), e)
 
     # This is intended to be overridded by DoFixture
@@ -87,7 +80,7 @@ class FlowFixture(FitLibraryFixture):
         cells = row.parts
         result = self.interpretCells(cells)
         if isinstance(result, Fixture):
-            self.interpretTableWithFixture(row.next, result)
+            self.interpretTableWithFixture(row.__next__, result)
             return True
         return False
 
@@ -164,7 +157,7 @@ class DoFixture(FlowFixture):
         # FIXME do something with a table to eliminate the check override
         cells = cells.more
         if cells is None:
-            raise FitException, "MissingCellsFailureException"
+            raise FitException("MissingCellsFailureException")
         args = cells.size() - 2
         expectedCell = cells.at(args + 1)
         target = self.findMethodByActionName(cells, args)
@@ -177,14 +170,14 @@ class DoFixture(FlowFixture):
     def show(self, cells):
         cells = cells.more
         if cells is None:
-            raise FitException, "MissingCellsFailureException"
+            raise FitException("MissingCellsFailureException")
         args = cells.size() - 1
         target = self.findMethodByActionName(cells, args)
         adapter = target.resultTypeAdapter
         try:
             result = self.callGivenMethod(target, cells)
             lastCell = self.addCell(cells)
-            if isinstance(result, types.StringTypes):
+            if isinstance(result, (str,)):
                 lastCell.body = str(result)
             else:
                 lastCell.body = adapter.toString(result, lastCell)
@@ -224,18 +217,18 @@ class DoFixture(FlowFixture):
         ensureCell = cells
         cells = cells.more
         if cells is None:
-            raise FitException, "MissingCellsFailureException"
+            raise FitException("MissingCellsFailureException")
         target = self.findMethodByActionName(cells, cells.size()-1)
         try:
             result = self.callGivenMethod(target, cells)
-            print "in DoFixture.ensure result: '%s'" % result
+            print("in DoFixture.ensure result: '%s'" % result)
             if result is True:
                 self.right(ensureCell)
             else:
                 self.wrong(ensureCell)
         except IgnoredException:
             pass
-        except Exception, ex:
+        except Exception as ex:
             self.exception(ensureCell, ex, color="wrong")
     ensure.fitLibSpecialAction = True
 
@@ -248,7 +241,7 @@ class DoFixture(FlowFixture):
         notCell = cells
         cells = cells.more
         if cells is None:
-            raise FitException, "MissingCellsFailureException"
+            raise FitException("MissingCellsFailureException")
         target = self.findMethodByActionName(cells,cells.size()-1)
         try:
             result = self.callGivenMethod(target, cells)
@@ -279,7 +272,7 @@ class DoFixture(FlowFixture):
         # |name|method|args|
         cells = cells.more
         if cells is None or cells.more is None:
-            raise FitException, "MissingCellsFailureException"
+            raise FitException("MissingCellsFailureException")
         name = cells.text()
         methodCells = cells.more
         args = methodCells.size() - 1
@@ -289,7 +282,7 @@ class DoFixture(FlowFixture):
             self.map[name] = result
             self.right(cells)
         else:
-            raise FitException, ("FitFailureException", "Must return an object.")
+            raise FitException("FitFailureException", "Must return an object.")
     name.fitLibSpecialAction = True
 
 
@@ -300,27 +293,27 @@ class DoFixture(FlowFixture):
         # |use|name|of|name|...
         cells = cells.more
         if cells is None:
-            raise FitException, "MissingCellsFailureException"
+            raise FitException("MissingCellsFailureException")
         name = cells.text()
         anObject = self.getMapper(cells.more).map.get(name)
         if isinstance(anObject, Fixture):
             return anObject
-        raise FitException, ("FitFailureException", "Unknown name: "+name)
+        raise FitException("FitFailureException", "Unknown name: "+name)
     use.fitLibSpecialAction = True
 
     def getMapper(self, cells):
         if cells is None:
             return self
         if cells.text() != "of":
-            raise FitException, ("FitFailureException", "Missing 'of'.")
+            raise FitException("FitFailureException", "Missing 'of'.")
         if cells.more is not None:
             cells = cells.more
             name = cells.text()
             anObject = self.getMapper(cells.more).map.get(name)
             if isinstance(anObject, Fixture):
                 return anObject
-            raise FitException, ("FitFailureException", "Unknown name: "+name)
-        raise FitException, ("FitFailureException", "Missing name.")
+            raise FitException("FitFailureException", "Unknown name: "+name)
+        raise FitException("FitFailureException", "Missing name.")
 # -------------- End of experimental feature --------------------
 
 #	/** To allow for DoFixture to be used without writing any fixtures.
@@ -328,19 +321,19 @@ class DoFixture(FlowFixture):
     def start(self, cells):
         cells = cells.more
         if cells is None:
-            raise FitException, "MissingCellsFailureException"
+            raise FitException("MissingCellsFailureException")
         if cells.more != None:
-            raise FitException, "ExtraCellsFailureException"
+            raise FitException("ExtraCellsFailureException")
         className = cells.text()
         try:
             theClass = self.loadFixture(className, shouldBeAFixture = False)
         except Exception:
-            raise FitException, ("FitFailureException", "Unknown class: "+className)
+            raise FitException("FitFailureException", "Unknown class: "+className)
         
         try:
             self.setSystemUnderTest(theClass())
         except Exception:
-            raise FitException, ("FitFailureException", "Class " + className + " failed to initialize")
+            raise FitException("FitFailureException", "Class " + className + " failed to initialize")
     start.fitLibSpecialAction = True
 
 #	/** To allow for a CalculateFixture to be used for the rest of the table.
@@ -373,17 +366,17 @@ class DoFixture(FlowFixture):
                 restOfTable = Parse(tag="table", body="", parts=row)
                 self.interpretTableWithFixture(restOfTable, result)
                 self.passedOntoOtherFixture = True
-            elif isinstance(target, types.BooleanType):
+            elif isinstance(target, bool):
                 pass
             elif target.getReturnType() == "$SUT":
                 if result is None:
                     self.wrong(firstCell)
-                if isinstance(result, types.StringTypes):
+                if isinstance(result, (str,)):
                     self.wrong(firstCell, result)
                 else:
                     self.setSystemUnderTest(result)
             return self.passedOntoOtherFixture
-        except Exception, ex:
+        except Exception as ex:
             self.exception(row, ex)
             return False
 
@@ -400,12 +393,12 @@ class DoFixture(FlowFixture):
                 return True, result
             target = self.findMethodByActionName(cells, cells.size()-1)
             result = target.invokeAndWrap(cells.more)
-            if isinstance(result, types.BooleanType):
+            if isinstance(result, bool):
                 target.color(cells, result)
             return target, result
         except IgnoredException:
             pass
-        except Exception, ex:
+        except Exception as ex:
             self.exception(cells, ex)
         return False, None
 
@@ -435,7 +428,7 @@ class DoFixture(FlowFixture):
             return
         if not inspect.ismethod(method):
             return
-        numArgs = method.im_func.func_code.co_argcount
+        numArgs = method.__func__.__code__.co_argcount
         if numArgs != 2: # (self, cells)
             return
         if hasattr(method, "fitLibSpecialAction") is False:
@@ -458,8 +451,8 @@ class DoFixture(FlowFixture):
         return target
 
     def findMethod(self, name, args):
-        print "in DoFixture.findMethod self.systemUnderTest: %s" % (
-            self.systemUnderTest)
+        print("in DoFixture.findMethod self.systemUnderTest: %s" % (
+            self.systemUnderTest))
         __pychecker__ = 'no-returnvalues' # last statement throws exception.
         sut = self.systemUnderTest or self
         try:
@@ -475,7 +468,7 @@ class DoFixture(FlowFixture):
         plural = "s"
         if args == 1:
             plural = ""
-        raise FitException, ("FitFailureException", 'Unknown: "%s" with %s argument%s'
+        raise FitException("FitFailureException", 'Unknown: "%s" with %s argument%s'
                                   % (name, args, plural))
 
     def callGivenMethod(self, target, rowCells):

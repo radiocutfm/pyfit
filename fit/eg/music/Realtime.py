@@ -4,7 +4,7 @@
 
 from fit.TimedActionFixture import TimedActionFixture
 from fit.ActionFixture import ActionFixture
-import Simulator
+from . import Simulator
 
 class Realtime(TimedActionFixture):
 
@@ -38,7 +38,7 @@ class Realtime(TimedActionFixture):
         functionName = self.camel(prefix + " " + cell.text()) # create method name
         try:
             getattr(Simulator, functionName)()
-        except LookupError, e: # XXX probably a more specific error...
+        except LookupError as e: # XXX probably a more specific error...
             self.exception(cell, e)
 
 

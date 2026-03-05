@@ -7,13 +7,6 @@ import sys
 import unittest
 from fit.Parse import Parse
 from fitLib.DisplayUtility import DisplayUtility
-
-try:
-    False
-except:
-    True = 1
-    False = 0
-
 def em(msg):
     if msg[-1] != "\n":
         msg += "\n"
@@ -26,7 +19,7 @@ def makeDisplayUtilityTest():
 
 class FakeObject(object):
     def __init__(self, aDict):
-        for key, value in aDict.items():
+        for key, value in list(aDict.items()):
             setattr(self, key, value)
 
 class ThrowsExceptionForStr(object):
@@ -35,7 +28,7 @@ class ThrowsExceptionForStr(object):
 
 class Test_DisplayUtility(unittest.TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     nameList = ["fie", "fi", "fo", "fum"]
     typeDict = {

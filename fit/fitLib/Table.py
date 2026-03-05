@@ -26,17 +26,17 @@ class TableTypeAdapter(object):
         if isinstance(aCell, Parse):
             if aCell.parts:
                 return Table(aCell.parts)
-            raise FitException, ("MissingTable")
-        if isinstance(aCell, types.StringTypes):
+            raise FitException(("MissingTable"))
+        if isinstance(aCell, (str,)):
             if aCell.body.lower().find("<table") != -1:
                 return Table(aCell)
-        raise FitException, ("MissingTable")
+        raise FitException(("MissingTable"))
 
     def toString(self, aTable, aCell):
         if not isinstance(aTable, TableInterface):
             return "null"
         if not isinstance(aCell, Parse):
-            raise FitException, ("CellAccessMissingCell")
+            raise FitException(("CellAccessMissingCell"))
         aCell.body = ""
         aCell.parts = aTable._parse
         return aTable.toString()
@@ -54,7 +54,7 @@ class Table(TableInterface):
     _parse = None # Parse
 
     def __init__(self, parse):
-        if isinstance(parse, types.StringTypes):
+        if isinstance(parse, (str,)):
             self._parse = Parse(parse)
         elif isinstance(parse, Parse):
             self._parse = parse

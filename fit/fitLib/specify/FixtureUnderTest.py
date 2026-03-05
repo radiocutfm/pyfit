@@ -17,7 +17,7 @@ class FixtureUnderTest(Fixture):
 
     # test method - what's going wrong?
     def doTable(self, table):
-        print "in doTable. table: '%s'" % table
+        print("in doTable. table: '%s'" % table)
         Fixture.doTable(self, table)
         
     def doRow(self, row):
@@ -73,8 +73,8 @@ class FixtureUnderTest(Fixture):
                 self.addRows() 
             else: 
                 raise Exception("Action not known: " + name) 
-        except Exception, ex: 
-            print "in FixtureUnderTest exception handler"
+        except Exception as ex: 
+            print("in FixtureUnderTest exception handler")
             traceback.print_exc(None, sys.stdout)
             self.exception(cells, ex)
 

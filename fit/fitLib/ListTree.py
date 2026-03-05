@@ -131,18 +131,18 @@ class ListTree(Tree):
             em("--- both operands are trees. invoking == operator. "
                "t1._text: '%s' t2._text: '%s'" % (t1._text, t2._text))
             return t1 == t2
-        if isinstance(t1, types.ListType) and isinstance(t2, types.ListType):
+        if isinstance(t1, list) and isinstance(t2, list):
             return t1 == t2
-        if isinstance(t1, types.StringTypes):
+        if isinstance(t1, (str,)):
             if isinstance(t2, Tree):
                 t2s = t2.toString()
-            elif isinstance(t2, types.ListType):
+            elif isinstance(t2, list):
                 t2s = [x.toString() for x in t2]
                 t2s = "[%s]" % ", ".join(t2s)
             else:
-                print ("in ListTree.equals. 2nd operand '%s' "
-                       "has unexpected type '%s'" % (t2, type(t2)))
-                raise Exception, ("invalid type for 2nd operand to "
+                print(("in ListTree.equals. 2nd operand '%s' "
+                       "has unexpected type '%s'" % (t2, type(t2))))
+                raise Exception("invalid type for 2nd operand to "
                                   "ListTree.equals: %s" % str(type(t2)))
             if t1 == t2s:
                 return True
@@ -168,7 +168,7 @@ class ListTree(Tree):
 
     def _parse(node):
         while node is not None:
-            print "in _parse. node.body: '%s'" % node.body
+            print("in _parse. node.body: '%s'" % node.body)
             body = node.body
             if body.find("<ul>") > -1:
                 nextLevel = Parse(body, ("ul", "li"))
@@ -248,7 +248,7 @@ class TreeTypeAdapter(TreeInterface): # extends MetaTypeAdapter {
             return "null"
         if hasattr(obj, "toString"):
             return obj.toString()
-        if isinstance(obj, types.ListType):
+        if isinstance(obj, list):
             result = [x.toString() for x in obj]
             result = "[%s]" % ", ".join(result)
             return result
@@ -257,6 +257,6 @@ class TreeTypeAdapter(TreeInterface): # extends MetaTypeAdapter {
     def equals(self, aString, b):
         if isinstance(aString, ListTree):
             return ListTree.equals(aString, b)
-        if isinstance(aString, types.StringTypes):
+        if isinstance(aString, (str,)):
             return ListTree.equals(self.parse(aString), b)
         return False

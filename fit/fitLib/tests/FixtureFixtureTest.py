@@ -8,13 +8,6 @@ from fit.Parse import Parse
 from fitLib import ParseUtility
 from fit.Fixture import Fixture
 from fitLib.FixtureFixture import FixtureFixture
-
-try:
-    False
-except:
-    True = 1
-    False = 0
-
 def makeFixtureFixtureTest():
     theSuite = unittest.makeSuite(FixtureFixtureTest, 'test')
 #    theSuite.addTest(unittest.makeSuite(Test_FooBar, 'Test'))

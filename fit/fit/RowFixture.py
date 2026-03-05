@@ -16,11 +16,6 @@ from fit import TypeAdapter
 from fit import taProtocol as taPro
 from fit.Utilities import em
 
-try:
-    False
-except: #pragma: no cover
-    True = 1
-    False = 0
 
 class RowFixtureBase(Fixture):
     actuals = []
@@ -50,10 +45,10 @@ class RowFixtureBase(Fixture):
                 collection = self.query()
 #                typeDict = self.getTargetClass()._typeDict
         if isinstance(collection, dict):
-            aList = collection.items()
+            aList = list(collection.items())
             aList.sort()
             self.actuals = [y for x, y in aList]
-        elif (isinstance(collection, types.StringTypes)):
+        elif (isinstance(collection, (str,))):
             raise FitException("UnsupportedCollectionType", type(collection))
         else:
             try:
@@ -107,7 +102,7 @@ class RowFixtureBase(Fixture):
                     accessor = TypeAdapter.on(self, camelName, typeDict,
 #                            {camelName: metaData},
                             accClass = TypeAdapter.AccessorBaseClass)
-                except FitException, e:
+                except FitException as e:
                     self.exception(labels, e)
                     accessor = None
             adapters.append(accessor)
@@ -117,7 +112,7 @@ class RowFixtureBase(Fixture):
             colNum += 1
         if wasError:
             raise FitException("IgnoreException")
-        self.columnBindings = zip(adapters, fieldNames, symRefs)
+        self.columnBindings = list(zip(adapters, fieldNames, symRefs))
         return self.columnBindings
 
     def _decodeLabel(self, fieldName, typeDict):
@@ -142,7 +137,7 @@ class RowFixtureBase(Fixture):
     def _getObj(self, name, objectOrDict):
         result = False, None
         if isinstance(objectOrDict, dict):
-            if objectOrDict.has_key(name):
+            if name in objectOrDict:
                 result = True, objectOrDict.get(name)
         else:
             if hasattr(objectOrDict, name): 
@@ -169,7 +164,7 @@ class RowFixture(RowFixtureBase):
             last.more = self.buildRows(self.surplus)
             self.markRows(last.more, "surplus")
             self.markList(self.missing, "missing")
-        except Exception, e:
+        except Exception as e:
             self.exception(rows.leaf(), e)
 
     def _checkForShortRows(self, rows):
@@ -204,7 +199,7 @@ class RowFixture(RowFixtureBase):
             keyMap = {}
             self.ePartition(expected, col, keyMap)
             self.cPartition(computed, col, keyMap)
-            for key, value in keyMap.items():
+            for key, value in list(keyMap.items()):
                 eList, cList = value
                 if not eList:
                     self.surplus.extend(cList)
@@ -228,7 +223,7 @@ class RowFixture(RowFixtureBase):
                     key = a.parse(cell.text())
                 self.insureKeyExists(map, key)
                 map[key][0].append(row)
-            except Exception, e:
+            except Exception as e:
                 self.exception(cell, e)
                 # mark the rest of the row as ignored (i.e. grey it out)
                 rest = cell.more
@@ -255,7 +250,7 @@ class RowFixture(RowFixtureBase):
         return
 
     def insureKeyExists(self, map, key):
-        if map.has_key(key):
+        if key in map:
             return
         map[key] = [[], []]
         return
@@ -353,7 +348,9 @@ class RowFixture(RowFixtureBase):
             else:
                 if not a:
                     try:
-                        next.body = str(value)
+                        text_value = str(value)
+                        text_value.encode("ascii")
+                        next.body = text_value
                     except Exception:
                         next.info("[error extracting value]")
                 else:
@@ -361,6 +358,6 @@ class RowFixture(RowFixtureBase):
                         a.target = obj
                         a.set(value)
                         next.body = a.toString(a.get())
-                    except Exception, e: #pragma: no cover # shouldn't be possible
+                    except Exception as e: #pragma: no cover # shouldn't be possible
                         self.exception(next, e)
         return root.more

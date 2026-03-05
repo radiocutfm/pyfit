@@ -57,7 +57,7 @@ class Tests(Fixture):
             else: 
                 self.wrong(cell)
                 cell.addToBody(data.footnote()); # XXX see note about footnotes.
-        except Exception, e:
+        except Exception as e:
             if str(e).find("Can't find tag: td") >= 0:
                 cell.addToBody("Can't parse <a href=\"" + testResult + "\">page</a>")
                 self.ignore(cell)

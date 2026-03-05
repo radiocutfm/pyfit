@@ -20,11 +20,6 @@ from fit.Summary import Summary
 from fit import TypeAdapter
 from fit.Utilities import em
 
-try:
-    False
-except: #pragma: no cover
-    True = 1
-    False = 0
 
 def makeMiscTest():
     suite = makeSuite(TestCounts, 'should')
@@ -188,7 +183,7 @@ class ExceptionTestAppConfig(object):
 
 class TestApplicationConfigurationInterface(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         self.saveAppConfig = (FitGlobal.RunAppConfigModule,
                               FitGlobal.RunAppConfig,
                               FitGlobal.appConfigModule,
@@ -220,7 +215,7 @@ class TestApplicationConfigurationInterface(TestCase):
 
 class TestSummary(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         self.sum = Summary()
 
 ##    def tearDown(self):
@@ -259,7 +254,7 @@ class TestSummary(TestCase):
 
 class TestImport(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         self.imp = imp = Import()
         imp.clearFixtureRenameTable()
         imp.clearRememberedPackageTable()

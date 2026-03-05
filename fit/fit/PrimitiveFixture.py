@@ -15,7 +15,7 @@ class PrimitiveFixture(Fixture):
     ## format converters ########################
 
     def parseLong(self,cell):
-        return long(cell.text())
+        return int(cell.text())
 
     ## answer comparisons ######################
 

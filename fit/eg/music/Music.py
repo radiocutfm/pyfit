@@ -14,7 +14,7 @@ class DateTime:
     def __init__(self, dateTime):
         dateList = dateTime.replace("/", " ").replace(":", " ").split()
         self.month, self.day, self.year, self.hour, self.minute, = \
-                  map(lambda x: int(x), dateList[:5])
+                  [int(x) for x in dateList[:5]]
         self.second = 0
         if self.year < 90: # Y2K idiocy
             self.year += 2000
@@ -91,7 +91,7 @@ class Music:
 
     def __init__(self, desc):
         list1 = desc.split("\t")[:10]
-        list2 = map(lambda x: x.strip(), list1)
+        list2 = [x.strip() for x in list1]
         self.title, self.artist, self.album, self.genre, sSize, \
                     sSeconds, sTrackNumber, sTrackCount, \
                sYear, sDate = list2

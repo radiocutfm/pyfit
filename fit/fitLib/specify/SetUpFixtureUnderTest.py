@@ -17,4 +17,4 @@ class SetUpFixtureUnderTest(SetUpFixture):
     def aB(self, a, b):
         __pychecker__ = "no-argsused"
         if a < 0:
-            raise Exception, "Testing..."
+            raise Exception("Testing...")

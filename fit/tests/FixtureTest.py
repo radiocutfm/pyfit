@@ -20,13 +20,6 @@ from fit.SiteOptions import BatchBase
 from fit.Utilities import em
 from fit import Variations
 from tests.TestCommon import FitTestCommon
-
-try:
-    False
-except:
-    True = 1
-    False = 0
-
 def makeFixtureTest():
     theSuite = makeSuite(TestFixtureInStandardsMode, 'test')
     theSuite.addTests([makeSuite(TestRunTime, 'test'),
@@ -41,7 +34,7 @@ def makeFixtureTest():
 
 class TestRunTime(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         self.savedTimeProperty = RunTime.currentTime
         RunTime.currentTime = property(RunTime.getMockTime)
         RunTime.mockTime = 1.0
@@ -95,7 +88,7 @@ class MockDoFixture(MockFixture1):
 
 class MockDoExceptionFixture(MockFixture1):
     def interpretTables(self, firstTable):
-        raise Exception, "test exception"
+        raise Exception("test exception")
 
 class MockDoExceptionFixture2(MockDoFixture):
     def interpretTables(self, firstTable):
@@ -105,15 +98,15 @@ class MockDoExceptionFixture2(MockDoFixture):
             aTable = aTable.more
             
     def doTable(self, aTable):
-        raise Exception, "test exception"
+        raise Exception("test exception")
 
 class MockDoTableExceptionFixture(Fixture):
     def doTable(self, aTable):
-        raise Exception, "test exception"
+        raise Exception("test exception")
 
 class TestFixtureInStandardsMode(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         setupFitGlobalForTests("Batch", ["+e"])
         self.options = Options(["FileRunner", "+v", "+e", "foo", "bar"],
                                BatchBase.parmDict)
@@ -248,7 +241,7 @@ class MockCamelTargetClass(object):
 
 class SpecifyWhichCamelToUse(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         setupFitGlobalForTests("Batch")
         self.options = Options(["FileRunner", "+v", "foo", "bar"],
                                BatchBase.parmDict)
@@ -406,7 +399,7 @@ class TestSymbols(TestCase):
 
 class TestFitNesseTest(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         setupFitGlobalForTests("FitNesseOnline")
 
     def tearDown(self):
@@ -432,7 +425,7 @@ class SetupExitMock1(Fixture):
 
 class SpecifySetupAndTeardownExits(FitTestCommon):        
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         setupFitGlobalForTests("FitNesseOnline")
         SetupExitMock1._typeDict = {}
 

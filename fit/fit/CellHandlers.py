@@ -39,7 +39,7 @@ class CellHandler(object):
     def __init__(self, aName):
         if isinstance(aName, CellHandler):
             return
-        if isinstance(aName, types.StringTypes):
+        if isinstance(aName, (str,)):
             self.name = aName
             self.handlerClass = FG.appConfigInterface("mapCellHandler",
                                                       (aName,))
@@ -138,7 +138,7 @@ class CellHandlers(object):
         if isinstance(key, int):
             if 0 <= key < len(self.handlerList):
                 return self.handlerList[key]
-            raise IndexError, key
+            raise IndexError(key)
         raise TypeError("Arguement must be an integer")
 
     def __len__(self):
@@ -198,7 +198,7 @@ class CellHandlers(object):
         return
 
     def _extractCellHandlerList(self, chDict, keyword):
-        return [item[0] for item in chDict.items()
+        return [item[0] for item in list(chDict.items())
                         if item[1] == keyword]
 
     def _tailorCellHandlersUsingMetadata(self, unused, identifier, metaData):
@@ -246,14 +246,14 @@ class CellHandlerBase(object):
     def getEditedText(self, cell):
         if isinstance(cell, Parse):
             return cell.text()
-        if isinstance(cell, types.StringTypes):
+        if isinstance(cell, (str,)):
             return cell
         raise FitException("invalidCellHandlerType", type(cell), cell)
 
     def getRawText(self, cell):    
         if isinstance(cell, Parse):
             return cell.body
-        if isinstance(cell, types.StringTypes):
+        if isinstance(cell, (str,)):
             return cell
         raise FitException("invalidCellHandlerType", type(cell), cell)
 

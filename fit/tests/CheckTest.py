@@ -9,13 +9,6 @@ from fit.Fixture import Fixture
 from fit.Parse import Parse
 import fit.TypeAdapter as ta
 from fit.Utilities import em
-
-try:
-    False
-except:
-    True = 1
-    False = 0
-
 def makeCheckTest():
     theSuite = unittest.makeSuite(Test_Check, 'test')
 #    theSuite.addTest(unittest.makeSuite(SpecifyFoo, 'Test'))
@@ -33,7 +26,7 @@ class testClass(Fixture):
 
 class Test_Check(unittest.TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def _checkTest(self, method, cellContent, resultObjName):        
         obj = testClass()

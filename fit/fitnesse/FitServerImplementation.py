@@ -31,11 +31,6 @@ port - the port the FitNesse server is listening on, frequently 80
 page-name - the full page name in FitNesse
 """
 
-try:
-    False
-except: #pragma: no cover
-    False = 0
-    True = 1
 
 import copy
 # import getopt
@@ -238,10 +233,10 @@ class FitNesseTestExecutor(object):
                         FG.appConfigInterface("afterTestExecution",
                                          self.fixture.counts,
                                          self.fixture.summary)
-                except ParseException, e:
+                except ParseException as e:
                     self.handleParseException(e, docName)
             conMsg.tmsg("completion signal received\n")
-        except Exception, e:
+        except Exception as e:
             self.exception(e)
         return self.counts
 
@@ -553,7 +548,7 @@ class FitProtocol(object):
     def readSize(reader):
         sizeString = reader.read(10)
         if len(sizeString) < 10:
-            raise Exception, "A size value could not be read. Fragment='%s'" % sizeString
+            raise Exception("A size value could not be read. Fragment='%s'" % sizeString)
         else:
             return int(sizeString)
     readSize = staticmethod(readSize)
@@ -705,11 +700,11 @@ class StandardResultHandler(object):
                 pathOut, self.host, self.port, result.fullPageName())
             return
         cssStuff = self.cssStyleTag
-        text = (u"<html><head><title>%s</title>\n"
-                u'<meta http-equiv="content-type" '
-                u'content="text/html; charset=UTF-8">\n'
-                u"%s</head><body>\n<h1>%s</h1>\n"
-                u"%s\n</body></html>" % (
+        text = ("<html><head><title>%s</title>\n"
+                '<meta http-equiv="content-type" '
+                'content="text/html; charset=UTF-8">\n'
+                "%s</head><body>\n<h1>%s</h1>\n"
+                "%s\n</body></html>" % (
                     title, cssStuff, title, result.content()))
         self._writeOutput(pathOut, text)
 
@@ -737,7 +732,7 @@ class StandardResultHandler(object):
         os.system(cmd)
 
     def _writeOutput(self, pathOut, text, mode="w"):
-        if type(text) == type(u""):
+        if type(text) == type(""):
             text = text.encode("utf-8")
         theFile = FG.fsa.open(pathOut, mode)
         theFile.write(text)
@@ -800,7 +795,7 @@ class StatsHandler(object):
         tl.append("%s<exceptions>%s</exceptions>\n" % (i, c.exceptions))
 
     def _summaryToXML(self, summary, textList):
-        items = summary.items()
+        items = list(summary.items())
         items.sort()
         textList.append("        <summary>\n")
         indent = "            "
@@ -1013,7 +1008,7 @@ class TestRunnerFixtureListener(object):
 ##            self._atStartOfResult = False
 
     def tableFinished(self, table):
-        data = table.oneHTMLTagToString().encode("UTF-8")
+        data = table.oneHTMLTagToString()
         self._currentPageResult.append(data)
 ##        type, info, tb = sys.exc_info()
 ##        traceList = traceback.format_exception(type, info, tb)

@@ -11,6 +11,30 @@ from fit.FitGlobal import FileSystemAdapter
 import fitnesse.FitServerImplementation as fsi
 from fit.Utilities import em
 
+
+class CompatBytes(bytes):
+    def _coerce(self, value):
+        if isinstance(value, str):
+            return value.encode("latin-1")
+        return value
+
+    def startswith(self, prefix, *args):
+        if isinstance(prefix, tuple):
+            prefix = tuple(self._coerce(p) for p in prefix)
+        else:
+            prefix = self._coerce(prefix)
+        return super(CompatBytes, self).startswith(prefix, *args)
+
+    def find(self, sub, *args):
+        sub = self._coerce(sub)
+        return super(CompatBytes, self).find(sub, *args)
+
+
+class CompatStr(str):
+    def decode(self, encoding="utf-8", errors="strict"):
+        raw = str(self).encode("latin-1")
+        return raw.decode(encoding, errors)
+
 class DummyApplicationExit(object):
     def __init__(self, opts):
         return
@@ -77,18 +101,18 @@ class VirtualFileSystem(FileSystemAdapter):
         while i < len(parts):
             theDir = theDir[1].get(parts[i])
             if theDir is None:
-                raise Exception, "path '%s' is too long" % path
+                raise Exception("path '%s' is too long" % path)
             if theDir[0] != "dir":
-                raise Exception, "path '%s' conains a non-directory" % path
+                raise Exception("path '%s' conains a non-directory" % path)
             i += 1
         return theDir
 
     def listdir(self, path):
         result = self._findFile(path)
         if result is not None and result[0] == "dir":
-            result = result[1].keys()
+            result = list(result[1].keys())
             return result
-        raise Exception, "%s isn't a directory!" % path
+        raise Exception("%s isn't a directory!" % path)
 
     def mkdir(self, path):
         head, tail = os.path.split(path)
@@ -96,7 +120,7 @@ class VirtualFileSystem(FileSystemAdapter):
         if theDir is not None and theDir[0] == "dir":
             theDir[1][tail] = ["dir", {}, "a date"]
         else:
-            raise Exception, "%s isn't a directory!" % head
+            raise Exception("%s isn't a directory!" % head)
 
     def makedirs(self, path):
         parts = self._splitAll(path)
@@ -106,11 +130,11 @@ class VirtualFileSystem(FileSystemAdapter):
             nextDir = curDir.get(parts[i])
             if nextDir is None: break
             if nextDir[0] != "dir":
-                raise Exception, "path '%s' contains a file!" % path
+                raise Exception("path '%s' contains a file!" % path)
             curDir = nextDir[1]
             i += 1
         if i >= len(parts):
-            raise Exception, "path '%s' is full!" % path
+            raise Exception("path '%s' is full!" % path)
         while i < len(parts):
             nextDir = {}
             curDir[parts[i]] = ["dir", nextDir, "a date"]
@@ -127,56 +151,97 @@ class VirtualFileSystem(FileSystemAdapter):
 
     def _addFile(self, path, aList):
         theDir = self._findDirForLeaf(path)
+        if isinstance(aList, bytes):
+            aList = CompatBytes(aList)
+        elif isinstance(aList, list):
+            converted = []
+            for item in aList:
+                if isinstance(item, bytes):
+                    converted.append(CompatBytes(item))
+                else:
+                    converted.append(item)
+            aList = converted
         theDir[1][os.path.basename(path)] = ["file", aList, "a date"]
 
     def open(self, path, mode):
         if mode[0].lower() == "r":
             theFile = self._findFile(path)
             if theFile is None or theFile[0] != "file":
-                raise Exception, "%s isn't a file!" % path
-            return MockFileObject(theFile[1])
+                raise Exception("%s isn't a file!" % path)
+            return MockFileObject(theFile[1], mode)
         head, tail = os.path.split(path)
         theDir = self._findFile(head)
         if theDir is None or theDir[0] != "dir":
-            raise Exception, "%s isn't a directory!" % head
+            raise Exception("%s isn't a directory!" % head)
         newFile = []
         theDir[1][tail] = ["file", newFile, "a date"]
-        return MockFileObject(newFile)
+        return MockFileObject(newFile, mode)
 
 class MockFileObject(object):
-    def __init__(self, aList):
+    def __init__(self, aList, mode="rt"):
         self.aList = aList
+        self.mode = mode
         self.filePos = 0
 
     def close(self):
         return
         
     def read(self):
-        if self.filePos < len(self.aList):
-            self.filePos = len(self.aList)
-            return "".join(self.aList)
-        return ""
+        is_binary = "b" in self.mode.lower()
+        if isinstance(self.aList, list):
+            if self.filePos < len(self.aList):
+                self.filePos = len(self.aList)
+                if is_binary:
+                    out = b""
+                    for item in self.aList:
+                        if isinstance(item, str):
+                            out += item.encode("latin-1")
+                        else:
+                            out += bytes(item)
+                    return CompatBytes(out)
+                return "".join(
+                    item.decode("latin-1") if isinstance(item, (bytes, bytearray)) else item
+                    for item in self.aList
+                )
+            return b"" if is_binary else ""
+        if self.filePos == 0:
+            self.filePos = 1
+            if is_binary and isinstance(self.aList, str):
+                return CompatBytes(self.aList.encode("latin-1"))
+            if (not is_binary) and isinstance(self.aList, (bytes, bytearray)):
+                return bytes(self.aList).decode("latin-1")
+            return self.aList
+        return b"" if is_binary else ""
 
     def readline(self):
-        if self.filePos < len(self.aList):
+        if isinstance(self.aList, list) and self.filePos < len(self.aList):
             self.filePos += 1
             return self.aList[self.filePos - 1]
         return ""
 
     def readlines(self):    
-        if self.filePos < len(self.aList):
+        if isinstance(self.aList, list) and self.filePos < len(self.aList):
             self.filePos = len(self.aList)
             return self.aList
         return []
 
     def write(self, aString):
+        if isinstance(aString, (bytes, bytearray)):
+            aString = CompatStr(bytes(aString).decode("latin-1"))
         self.aList.append(aString)
 
     def writeline(self, aString):
+        if isinstance(aString, (bytes, bytearray)):
+            aString = CompatStr(bytes(aString).decode("latin-1"))
         self.aList.append(aString)
 
     def writelines(self, aList):
-        self.aList += aList
+        converted = []
+        for item in aList:
+            if isinstance(item, (bytes, bytearray)):
+                item = CompatStr(bytes(item).decode("latin-1"))
+            converted.append(item)
+        self.aList += converted
 
 class ioMock(fsi.FitNesseNetworkInterface):
     def __init__(self):
@@ -187,7 +252,7 @@ class ioMock(fsi.FitNesseNetworkInterface):
         self.recNumOut = -1
 
     def connect(self, host, port):
-        print "in establishConnection host: '%s' port: '%s'" % (host, port)
+        print("in establishConnection host: '%s' port: '%s'" % (host, port))
         self.host = host
         self.port = port
 
@@ -201,7 +266,9 @@ class ioMock(fsi.FitNesseNetworkInterface):
         self.errorOnWrite = writeNum
         
     def write(self, text):
-        print "in write: length: '%s' text: '%s'" % (len(text), text[:50])
+        if isinstance(text, (bytes, bytearray)):
+            text = CompatStr(bytes(text).decode("latin-1"))
+        print("in write: length: '%s' text: '%s'" % (len(text), text[:50]))
         self.outputList.append(text)
         self.recNumOut += 1
         if self.recNumOut == self.errorOnWrite:
@@ -211,7 +278,7 @@ class ioMock(fsi.FitNesseNetworkInterface):
         return None
 
     def read(self, unused='size'):
-        print "in read listIndex: %s" % self.listIndex
+        print("in read listIndex: %s" % self.listIndex)
         self.listIndex += 1
         return self.inputList[self.listIndex - 1]
 

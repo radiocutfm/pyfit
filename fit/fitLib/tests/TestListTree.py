@@ -5,13 +5,6 @@
 
 import unittest
 from fitLib.ListTree import ListTree
-
-try:
-    False
-except:
-    True = 1
-    False = 0
-
 def makeListTreeTest():
     theSuite = unittest.makeSuite(Test_ListTree, 'test')
 #    theSuite.addTest(unittest.makeSuite(Test_FooBar, 'Test'))
@@ -23,7 +16,7 @@ class Test_ListTree(unittest.TestCase):
     toplessTree = None
     
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         self.topTree = ListTree("top")
         self.tree = ListTree("tree", [ListTree("a"),
                                       ListTree("b", [ListTree("c")])])
@@ -39,7 +32,7 @@ class Test_ListTree(unittest.TestCase):
         self.treesUnEqual(self.topTree, ListTree("bottom"))
         
     def testTopToString(self):
-        print self.topTree.toString()
+        print(self.topTree.toString())
         assert "top" == self.topTree.toString()
 
     def testToplessTreeToString(self):
@@ -73,8 +66,8 @@ class Test_ListTree(unittest.TestCase):
     def testTreeToString(self):
         tree = "tree<ul><li>a</li><li>b<ul><li>c</li></ul></li></ul>"
         result = self.tree.toString()
-        print tree
-        print result
+        print(tree)
+        print(result)
         assert tree == self.tree.toString()
 
     def testParseTop(self):
@@ -83,8 +76,8 @@ class Test_ListTree(unittest.TestCase):
     def testParseTree1(self):
         text = "tree<ul><li>a</li></ul>"
         parsed = ListTree.parse(text).toString()
-        print text
-        print parsed
+        print(text)
+        print(parsed)
         assert text == parsed
 
     def testParseTree(self):
@@ -138,9 +131,9 @@ class Test_ListTree(unittest.TestCase):
             self.fail("Doesn't handle lists with </li> missing.")
 
     def assertParsed(self, s):
-        print s
+        print(s)
         result = ListTree.parse(s).toString()
-        print result
+        print(result)
         assert s == result
 
     def treesEqual(self, t1, t2):

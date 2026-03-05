@@ -94,7 +94,7 @@ def _camel(name):
     return hidePythonKeyword(translateUnicode(name))
 
 def hidePythonKeyword(name):
-    if pythonKeywords.has_key(name):
+    if name in pythonKeywords:
         return name+"_"
     return name
 
@@ -104,7 +104,7 @@ def translateUnicode(name):
     while i < len(name):
         if ord(name[i]) > 127:
             coded = "0000" + hex(ord(name[i])).upper()
-            if type(name) == type(u""):
+            if type(name) == type(""):
                 coded = "u"+coded[-4:]
             else:
                 coded = "x"+coded[-2:]

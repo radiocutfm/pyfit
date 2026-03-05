@@ -19,7 +19,7 @@ from fit.ColumnFixture import ColumnFixture
 from fit.TypeAdapter import adapterOnType, adapterOnField, adapterOnMethod
 from fit.ScientificDouble import ScientificDouble
 
-print "current Python path: '%s'" % "\n".join(sys.path)
+print("current Python path: '%s'" % "\n".join(sys.path))
 
 class FrameworkTest(unittest.TestCase):
     def setUp(self):
@@ -31,70 +31,70 @@ class FrameworkTest(unittest.TestCase):
         os.chdir(self.tail)
 
     def testParsing(self):
-        print "----- in testParsing"
+        print("----- in testParsing")
         tags = ("table",)
         p = Parse("leader<Table foo=2>body</table>trailer", tags)
-        self.assertEquals("leader", p.leader)
-        self.assertEquals("<Table foo=2>", p.tag)
-        self.assertEquals("body", p.body)
-        self.assertEquals("trailer", p.trailer)
+        self.assertEqual("leader", p.leader)
+        self.assertEqual("<Table foo=2>", p.tag)
+        self.assertEqual("body", p.body)
+        self.assertEqual("trailer", p.trailer)
     
     def testRecursing(self):
-        print "----- in testRecursing"
+        print("----- in testRecursing")
         p = Parse("leader<table><TR><Td>body</tD></TR></table>trailer")
-        self.assertEquals("", p.body) # change 0.7 wrong invariant
-        self.assertEquals("", p.parts.body) # change 0.7 wrong invariant
-        self.assertEquals("body", p.parts.parts.body)
+        self.assertEqual("", p.body) # change 0.7 wrong invariant
+        self.assertEqual("", p.parts.body) # change 0.7 wrong invariant
+        self.assertEqual("body", p.parts.parts.body)
     
     def testIterating(self):
         p = Parse("leader<table><tr><td>one</td><td>two</td><td>three</td></tr></table>trailer")
-        self.assertEquals("one", p.parts.parts.body)
-        self.assertEquals("two", p.parts.parts.more.body)
-        self.assertEquals("three", p.parts.parts.more.more.body)
+        self.assertEqual("one", p.parts.parts.body)
+        self.assertEqual("two", p.parts.parts.more.body)
+        self.assertEqual("three", p.parts.parts.more.more.body)
     
     def testIndexing(self):
         p = Parse("leader<table><tr><td>one</td><td>two</td><td>three</td></tr><tr><td>four</td></tr></table>trailer")
-        self.assertEquals("one", p.at(0,0,0).body)
-        self.assertEquals("two", p.at(0,0,1).body)
-        self.assertEquals("three", p.at(0,0,2).body)
-        self.assertEquals("three", p.at(0,0,3).body)
-        self.assertEquals("three", p.at(0,0,4).body)
-        self.assertEquals("four", p.at(0,1,0).body)
-        self.assertEquals("four", p.at(0,1,1).body)
-        self.assertEquals("four", p.at(0,2,0).body)
-        self.assertEquals(1, p.size())
-        self.assertEquals(2, p.parts.size())
-        self.assertEquals(3, p.parts.parts.size())
-        self.assertEquals("one", p.leaf().body)
-        self.assertEquals("four", p.parts.last().leaf().body)
+        self.assertEqual("one", p.at(0,0,0).body)
+        self.assertEqual("two", p.at(0,0,1).body)
+        self.assertEqual("three", p.at(0,0,2).body)
+        self.assertEqual("three", p.at(0,0,3).body)
+        self.assertEqual("three", p.at(0,0,4).body)
+        self.assertEqual("four", p.at(0,1,0).body)
+        self.assertEqual("four", p.at(0,1,1).body)
+        self.assertEqual("four", p.at(0,2,0).body)
+        self.assertEqual(1, p.size())
+        self.assertEqual(2, p.parts.size())
+        self.assertEqual(3, p.parts.parts.size())
+        self.assertEqual("one", p.leaf().body)
+        self.assertEqual("four", p.parts.last().leaf().body)
 
     def testParseException(self):
         try:
             Parse("leader<table><tr><th>one</th><th>two</th><th>three</th></tr><tr><td>four</td></tr></table>trailer")
-        except ParseException, e:
-            self.assertEquals(17, e.offset)
-            self.assertEquals("Can't find tag: td", e.message)
+        except ParseException as e:
+            self.assertEqual(17, e.offset)
+            self.assertEqual("Can't find tag: td", e.message)
             return
         self.fail("expected exception not thrown")
 
     def testText(self):
         tags =("td",)
-        print "----- in testText"
+        print("----- in testText")
         p = Parse("<td>a&lt;b</td>", tags)
-        self.assertEquals("a&lt;b", p.body)
-        self.assertEquals("a<b", p.text())
+        self.assertEqual("a&lt;b", p.body)
+        self.assertEqual("a<b", p.text())
         p = Parse("<td>\ta&gt;b&nbsp;&amp;&nbsp;b>c &&&nbsp;</td>", tags)
-        self.assertEquals("a>b & b>c &&", p.text())
+        self.assertEqual("a>b & b>c &&", p.text())
         p = Parse("<td>\ta&gt;b&nbsp;&amp;&nbsp;b>c &&nbsp;</td>", tags)
-        self.assertEquals("a>b & b>c &", p.text())
+        self.assertEqual("a>b & b>c &", p.text())
         p = Parse("<TD><P><FONT FACE=\"Arial\" SIZE=2>GroupTestFixture</FONT></TD>", tags)
-        self.assertEquals("GroupTestFixture",p.text())
+        self.assertEqual("GroupTestFixture",p.text())
 
     def testUnescape(self):
-        self.assertEquals("a<b", Parse().unescape("a&lt;b"))
-        self.assertEquals("a>b & b>c &&", Parse().unescape("a&gt;b&nbsp;&amp;&nbsp;b>c &&"))
-        self.assertEquals("&amp;&amp;", Parse().unescape("&amp;amp;&amp;amp;"))
-        self.assertEquals("a>b & b>c &&", Parse().unescape("a&gt;b&nbsp;&amp;&nbsp;b>c &&"))
+        self.assertEqual("a<b", Parse().unescape("a&lt;b"))
+        self.assertEqual("a>b & b>c &&", Parse().unescape("a&gt;b&nbsp;&amp;&nbsp;b>c &&"))
+        self.assertEqual("&amp;&amp;", Parse().unescape("&amp;amp;&amp;amp;"))
+        self.assertEqual("a>b & b>c &&", Parse().unescape("a&gt;b&nbsp;&amp;&nbsp;b>c &&"))
 
 # removed in Fit 1.0 Java changes
 ##    def testUnformat(self):
@@ -106,22 +106,22 @@ class FrameworkTest(unittest.TestCase):
         f = TestFixture()
         a = adapterOnField(f, 'sampleInt')
         a.set(a.parse("123456"))
-        self.assertEquals(123456, f.sampleInt)
-        self.assertEquals("-234567", str(a.parse("-234567")))
+        self.assertEqual(123456, f.sampleInt)
+        self.assertEqual("-234567", str(a.parse("-234567")))
         a = adapterOnMethod(f, "pi")
 # we do not currently support creating an adapter from a method declaration
 #        a = adapterOnMethod(f, f.__class__.pi)
-        self.assert_(abs(3.14159 - a.invoke()) < 0.00001)
-        self.assertEquals(3.14159862, a.invoke())
+        self.assertTrue(abs(3.14159 - a.invoke()) < 0.00001)
+        self.assertEqual(3.14159862, a.invoke())
         a = adapterOnField(f, 'sampleString')
         a.set(a.parse("xyzzy"))
-        self.assertEquals('xyzzy', f.sampleString)
+        self.assertEqual('xyzzy', f.sampleString)
         a = adapterOnField(f, 'sampleFloat')
         a.set(a.parse("6.02e23"))
         # not sure what the 1e17 is supposed to be here. If it's the epsilon,
         #  the Python version of xUnit does not support it. We can get a
         #  similar effect by inserting a .precision into _typeDict.
-        self.assertEquals(6.02e23, f.sampleFloat) #, 1e17
+        self.assertEqual(6.02e23, f.sampleFloat) #, 1e17
         # the remaining tests in the September 2002 version were commented
         #  out because the type adapter strategy didn't support lists. The
         #  current strategy does.
@@ -131,7 +131,7 @@ class FrameworkTest(unittest.TestCase):
         f = TestFixture()
         a = adapterOnField(f, "sampleInteger")
         a.set(a.parse("54321"))
-        self.assertEquals("54321", str(f.sampleInteger))
+        self.assertEqual("54321", str(f.sampleInteger))
 
 # This phrase will never work on Python, since Python does not have a
 #  single character type.
@@ -141,22 +141,22 @@ class FrameworkTest(unittest.TestCase):
         
         a = adapterOnField(f, "name")
         a.set(a.parse("xyzzy"))
-        self.assertEquals("xyzzy", f.name)
+        self.assertEqual("xyzzy", f.name)
         
         a = adapterOnField(f, "sampleFloat")
         a.set(a.parse("6.02e23"))
-        self.assertEquals(6.02e23, f.sampleFloat, 1e17);
+        self.assertEqual(6.02e23, f.sampleFloat, 1e17);
                           
         a = adapterOnField(f, "sampleArray")
         a.set(a.parse("1,2,3"))
-        self.assertEquals(1, f.sampleArray[0])
-        self.assertEquals(2, f.sampleArray[1])
-        self.assertEquals(3, f.sampleArray[2])
+        self.assertEqual(1, f.sampleArray[0])
+        self.assertEqual(2, f.sampleArray[1])
+        self.assertEqual(3, f.sampleArray[2])
 # following test doesn't work because I'm using the native str() 
 #        self.assertEquals("1, 2, 3", a.toString(f.sampleArray))
-        self.assertEquals("[1, 2, 3]", a.toString(f.sampleArray))
+        self.assertEqual("[1, 2, 3]", a.toString(f.sampleArray))
 
-        self.assertEquals(a.equals([1,2,3], f.sampleArray), 1)
+        self.assertEqual(a.equals([1,2,3], f.sampleArray), 1)
 
 # we do not currently have a generic date adapter.
 #        a = TypeAdapterOnField(f, "sampleDate")
@@ -166,10 +166,10 @@ class FrameworkTest(unittest.TestCase):
                           
         a = adapterOnField(f, "sampleByte")
         a.set(a.parse("123"))
-        self.assertEquals(123, f.sampleByte)
+        self.assertEqual(123, f.sampleByte)
         a = adapterOnField(f, "sampleShort")
         a.set(a.parse("12345"))
-        self.assertEquals(12345, f.sampleShort)
+        self.assertEqual(12345, f.sampleShort)
 
     def assertBooleanTypeAdapterParses(self, f, booleanString, assertedValue):
         booleanAdapter = adapterOnField(f, "sampleBoolean")
@@ -222,15 +222,15 @@ class FrameworkTest(unittest.TestCase):
 
     def testEscape(self):
         junk = "!@#$%^*()_-+={|[]\\:\";',./?`"
-        self.assertEquals(junk, Fixture().escape(junk))
-        self.assertEquals("", Fixture().escape(""))
-        self.assertEquals("&lt;", Fixture().escape("<"))
-        self.assertEquals("&lt;&lt;", Fixture().escape("<<"))
-        self.assertEquals("x&lt;", Fixture().escape("x<"))
-        self.assertEquals("&amp;", Fixture().escape("&"))
-        self.assertEquals("&lt;&amp;&lt;", Fixture().escape("<&<"))
-        self.assertEquals("&amp;&lt;&amp;", Fixture().escape("&<&"))
-        self.assertEquals("a &lt; b &amp;&amp; c &lt; d", Fixture().escape("a < b && c < d"))
+        self.assertEqual(junk, Fixture().escape(junk))
+        self.assertEqual("", Fixture().escape(""))
+        self.assertEqual("&lt;", Fixture().escape("<"))
+        self.assertEqual("&lt;&lt;", Fixture().escape("<<"))
+        self.assertEqual("x&lt;", Fixture().escape("x<"))
+        self.assertEqual("&amp;", Fixture().escape("&"))
+        self.assertEqual("&lt;&amp;&lt;", Fixture().escape("<&<"))
+        self.assertEqual("&amp;&lt;&amp;", Fixture().escape("&<&"))
+        self.assertEqual("a &lt; b &amp;&amp; c &lt; d", Fixture().escape("a < b && c < d"))
 
     def testFixtureArguments(self):
         prefix = "<table><tr><td>fit.Fixture</td>"
@@ -240,20 +240,20 @@ class FrameworkTest(unittest.TestCase):
         table = Parse(prefix + "<td>1</td>" + suffix)
         f.getArgsForTable(table)
         args = f.getArgs()
-        self.assertEquals(1, len(args))
-        self.assertEquals("1", args[0])
+        self.assertEqual(1, len(args))
+        self.assertEqual("1", args[0])
 
         table = Parse(prefix + "" + suffix)
         f.getArgsForTable(table)
         args = f.getArgs()
-        self.assertEquals(0, len(args))
+        self.assertEqual(0, len(args))
 
         table = Parse(prefix + "<td>1</td><td>2</td>" + suffix)
         f.getArgsForTable(table)
         args = f.getArgs()
-        self.assertEquals(2, len(args))
-        self.assertEquals("1", args[0])
-        self.assertEquals("2", args[1])
+        self.assertEqual(2, len(args))
+        self.assertEqual("1", args[0])
+        self.assertEqual("2", args[1])
 
 ##    def testRuns(self):
 ##        self.runFIT("arithmetic", 40, 8, 0, 1)

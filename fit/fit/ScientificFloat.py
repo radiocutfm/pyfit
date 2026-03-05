@@ -70,6 +70,18 @@ class ScientificFloat(object):
     def __ne__(self, other):
         return self.__cmp__(other) != 0
 
+    def __lt__(self, other):
+        return self.__cmp__(other) < 0
+
+    def __le__(self, other):
+        return self.__cmp__(other) <= 0
+
+    def __gt__(self, other):
+        return self.__cmp__(other) > 0
+
+    def __ge__(self, other):
+        return self.__cmp__(other) >= 0
+
     # !!! the following two methods are not intended to
     #     support general arithmetic operations. They are
     #     here to support unittest and the float type

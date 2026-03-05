@@ -7,8 +7,8 @@ Released under the terms of the GNU General Public License version 2 or later.
 from fit.PrimitiveFixture import PrimitiveFixture
 
 class ArithmeticFixture(PrimitiveFixture):
-    x=0L
-    y=0L
+    x=0
+    y=0
 
     def doRows(self,rows):
         # skip column heads
@@ -20,7 +20,7 @@ class ArithmeticFixture(PrimitiveFixture):
         elif column == 2: self.check(cell, self.x+self.y)
         elif column == 3: self.check(cell, self.x-self.y)
         elif column == 4: self.check(cell, self.x*self.y)
-        elif column == 5: self.check(cell, self.x/self.y)
+        elif column == 5: self.check(cell, self.x//self.y)
         elif column == 6: pass
         else: self.ignore(cell)
 

@@ -14,13 +14,6 @@ from fit.FitException import FitException
 from fit.InitEnvironment import FG, setupFitGlobalForTests
 import fit.Variations as Variations
 from tests.TestCommon import FitTestCommon
-
-try:
-    False
-except:
-    True = 1
-    False = 0
-
 def makeVariationsTest():
     theSuite = unittest.makeSuite(SpecifyVariations, 'test')
     theSuite.addTest(unittest.makeSuite(SpecifyMapLabel, "should"))
@@ -28,7 +21,7 @@ def makeVariationsTest():
 
 class SpecifyVariations(unittest.TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def testCamel(self):
         obj = Variations.VariationsBase()
@@ -80,10 +73,10 @@ class SpecifyVariations(unittest.TestCase):
             ("", "blank"),
             ("2 words", "twoWords"),
             ("return", "return_"),
-            (u"\u216C", u"u216C"),
-            (u"\u216D\uFFFE", u"u216DuFFFE"),
-            (u"\uFFFF", u"uFFFF"),
-            (u"\u0041b", u"Ab"),
+            ("\u216C", "u216C"),
+            ("\u216D\uFFFE", "u216DuFFFE"),
+            ("\uFFFF", "uFFFF"),
+            ("\u0041b", "Ab"),
             ]:
             result = obj._extendedLabelMapping(label)
             assert result == identifier, (
@@ -95,7 +88,7 @@ class SpecifyVariations(unittest.TestCase):
 
 class SpecifyMapLabel(FitTestCommon):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         setupFitGlobalForTests("Batch")
         self.obj = Variations.VariationsBase()
 

@@ -18,11 +18,6 @@ from fit.Fixture import Fixture
 from fit.Parse import Parse
 from fit.Utilities import em
 
-try:
-    False
-except: #pragma: no cover
-    True = 1
-    False = 0
 
 def makeActionFixtureTest():
     theSuite = makeSuite(ActionFixtureTests, 'should')
@@ -55,7 +50,7 @@ class NotAFixture(object):
 
 class ActionFixtureTests(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         FitGlobal.Environment = "Batch"
         ActionFixture.actor = None
         ActionFixture.cells = None

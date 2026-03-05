@@ -24,7 +24,7 @@ def getProtocolFor(typeAdapter):
         return RawStringProtocol(typeAdapter)
     if typeAdapter.fitAdapterProtocol == "CellAccess":
         return CellAccessProtocol(typeAdapter)
-    raise FitException, ("UnknownProtocol", typeAdapter.fitAdapterProtocol)
+    raise FitException("UnknownProtocol", typeAdapter.fitAdapterProtocol)
 
 class ProtocolBase(object):
     def __init__(self, typeAdapter):
@@ -42,7 +42,7 @@ class BasicProtocol(ProtocolBase):
     def equals(self, cell, obj):
         if isinstance(cell, Parse):
             return self.ta.equals(self.parse(cell.text()), obj)
-        if isinstance(cell, types.StringTypes):
+        if isinstance(cell, (str,)):
             return self.ta.equals(self.parse(cell), obj)
         return self.ta.equals(cell, obj)
 
@@ -61,7 +61,7 @@ class EditedStringProtocol(ProtocolBase):
     def equals(self, cell, obj):
         if isinstance(cell, Parse):
             return self.ta.equals(cell.text(), obj)
-        if isinstance(cell, types.StringTypes):
+        if isinstance(cell, (str,)):
             return self.ta.equals(cell, obj)
         return self.ta.equals(self.ta.toString(cell), obj)
 
@@ -80,7 +80,7 @@ class RawStringProtocol(ProtocolBase):
     def equals(self, cell, obj):
         if isinstance(cell, Parse):
             return self.ta.equals(cell.body, obj)
-        if isinstance(cell, types.StringTypes):
+        if isinstance(cell, (str,)):
             return self.ta.equals(cell, obj)
         return self.ta.equals(self.ta.toString(cell), obj)
 
@@ -94,17 +94,17 @@ class CellAccessProtocol(ProtocolBase):
     def parse(self, cell):
         if isinstance(cell, Parse):
             return self.ta.parse(cell)
-        raise FitException, ("CellAccessMissingCell",)
+        raise FitException("CellAccessMissingCell",)
 
     def equals(self, cell, obj):
         if isinstance(cell, Parse):
             return self.ta.equals(cell, obj)
-        raise FitException, ("CellAccessMissingCell",)
+        raise FitException("CellAccessMissingCell",)
 
     def toString(self, obj, cell=None):
         if isinstance(cell, Parse):
             return self.ta.toString(obj, cell)
-        raise FitException, ("CellAccessMissingCell",)
+        raise FitException("CellAccessMissingCell",)
 
 class ApplicationProtocol(ProtocolBase):
     protocolName = "ApplicationObject"        
@@ -117,7 +117,7 @@ class ApplicationProtocol(ProtocolBase):
     def equals(self, cell, other):
         if isinstance(cell, Parse):
             obj = self.ta(cell.text())
-        elif isinstance(cell, types.StringTypes):
+        elif isinstance(cell, (str,)):
             obj = self.ta(cell)
         else:
             obj = cell

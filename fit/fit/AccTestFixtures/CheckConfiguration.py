@@ -14,7 +14,7 @@ class CheckConfiguration(Fixture):
         cellList = self._makeListFromRow(cells)
         try:
             self._checkRow(cellList)
-        except Exception, e:
+        except Exception as e:
             self.exception(cellList[0], e)
 
     def _makeListFromRow(self, row):
@@ -40,7 +40,7 @@ class CheckConfiguration(Fixture):
 
     def checkObjectReference(self, cellList, theObj = None):
         if len(cellList) != 2:
-            raise Exception, "Wrong number of cells in row."
+            raise Exception("Wrong number of cells in row.")
         attr = cellList[0].text()
         actual = getattr(theObj, attr, None)
         if actual is None:
@@ -54,7 +54,7 @@ class CheckConfiguration(Fixture):
 
     def checkScalar(self, cellList, theObj = None):
         if len(cellList) != 1:
-            raise Exception, "Wrong number of cells in row."
+            raise Exception("Wrong number of cells in row.")
         self.checkResult(cellList[0], str(theObj))
         return
 

@@ -15,15 +15,15 @@ def toString(tables):
 
 # XXX untested!
 def printParse(tables, title):
-    print "---------Parse tables for "+title+":----------"
+    print("---------Parse tables for "+title+":----------")
     if tables is None:
         output = "No output to print!"
     else:
         output = tables.toString()
-        if type(output) == type(u""):
+        if type(output) == type(""):
             output = output.encode(sys.getdefaultencoding(), "replace")
-    print output
-    print "----------------------------"
+    print(output)
+    print("----------------------------")
 
 # !!! should be appendRowToTable
 # XXX untested

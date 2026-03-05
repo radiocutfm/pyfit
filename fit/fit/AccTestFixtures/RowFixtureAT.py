@@ -66,7 +66,7 @@ class ListCollectionHandler(object):
         self.metaData[key] = "String"
 
     def removeMetaData(self, key):
-        if self.metaData.has_key(key):
+        if key in self.metaData:
             del self.metaData[key]
             return None, ""
         else:

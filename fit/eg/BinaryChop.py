@@ -99,7 +99,7 @@ class BinaryChop(ColumnFixture):
         return -1
 
     def chopFriday(self, key, array):
-        for i in xrange(len(array)):
+        for i in range(len(array)):
             if key == array[i]: return i
         return -1
 

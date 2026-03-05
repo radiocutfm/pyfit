@@ -14,7 +14,7 @@ class HtmlToTextFixture(ColumnFixture):
     HTML = ""
     
     def Text(self):
-        HTML = re.sub(r"\\u00a0", u"\u00a0", self.HTML)
+        HTML = re.sub(r"\\u00a0", "\u00a0", self.HTML)
         return self._escapeAscii(Parse.htmlToText(HTML))
 
     def _escapeAscii(self, text):

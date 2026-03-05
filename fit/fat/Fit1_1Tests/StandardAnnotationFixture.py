@@ -35,7 +35,7 @@ class StandardAnnotationFixture(ColumnFixture):
             else:
                 super(StandardAnnotationFixture, self).doCell(cell, column)
                 
-        except Exception, e:
+        except Exception as e:
             self.exception(cell, e)
 
     _typeDict["RenderedOutput"] = "String"

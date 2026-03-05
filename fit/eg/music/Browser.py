@@ -12,11 +12,11 @@ from fit.Fixture import Fixture
 # Notice that this does create a dependency because there are two other
 # top level modules: Display and Realtime.
 
-import Dialog
-import Music
-import MusicLibrary
-import MusicPlayer
-import Simulator
+from . import Dialog
+from . import Music
+from . import MusicLibrary
+from . import MusicPlayer
+from . import Simulator
 
 # Initialize Dialog
 Dialog.MusicPlayer = MusicPlayer

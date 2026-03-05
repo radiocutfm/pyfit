@@ -6,7 +6,7 @@
 # Last updated for Release 0.8a1
 #endLegalStuff
 
-from Fixture import Fixture
+from .Fixture import Fixture
 
 class Import(Fixture):
     def doRow(self, row):

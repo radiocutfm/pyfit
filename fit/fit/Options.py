@@ -8,11 +8,6 @@ import os, os.path
 from fit import SiteOptions
 from fit.Utilities import em
 
-try:
-    False
-except: #pragma: no cover
-    False = 0
-    True = 1
 
 class Options(object):
     # XXX The defaultRunner parameter is no longer used; it should be

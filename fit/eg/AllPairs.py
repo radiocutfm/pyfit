@@ -37,6 +37,7 @@
 
 from eg.AllCombinations import AllCombinations
 from eg.AllFiles import AllFiles
+from functools import reduce
 
 class AllPairs(AllCombinations):
 
@@ -91,7 +92,7 @@ class AllPairs(AllCombinations):
         self.summary["total pairs"] = "%s" % len(self.pairs)
 
     def factorial(self, number):
-        return reduce(lambda x, y: x * y, range(1, number + 1))
+        return reduce(lambda x, y: x * y, list(range(1, number + 1)))
 
     def evaluateCase(self, fileList):
         numUngeneratedPairs = 0

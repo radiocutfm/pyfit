@@ -13,13 +13,6 @@ from fitLib.tests import CalculateFixtureTest
 from fitLib.tests import FlowFixtureFixtureTest
 from fitLib.tests import TestListTree
 from fitLib.tests import TestParseUtility
-
-try:
-    False
-except:
-    True = 1
-    False = 0
-
 def makeAllTests():
     suite = CalculateFixtureTest.makeCalculateFixtureSpecifications()
     suite.addTests((FlowFixtureFixtureTest.makeFlowFixtureFixtureTest(),))

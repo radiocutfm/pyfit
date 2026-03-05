@@ -19,8 +19,8 @@ class OutputFixture(ColumnFixture):
         return self._GenerateOutput(cell)
 
     def _unescape(self, text): 
-        text = text.replace(ur"\n", "\n")
-        text = text.replace(ur"\r", "\r")
+        text = text.replace(r"\n", "\n")
+        text = text.replace(r"\r", "\r")
         return text
     
     def _GenerateOutput(self, parse):

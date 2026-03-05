@@ -37,8 +37,8 @@ class Equals(PrimitiveFixture):
             elif head == "?":
                 cell.addToBody(self.info("x: %s y: %s" % (self.x, self.y)))
             else:
-                raise Exception, "don't do " + head
-        except Exception, e:
+                raise Exception("don't do " + head)
+        except Exception as e:
             self.exception(cell, e)
 
     def getTypeAdapter(self, typeName):
@@ -52,7 +52,7 @@ class Equals(PrimitiveFixture):
             adapter = shortName.title()
         metadata = {typeName: adapter}
 
-        if not isinstance(adapter, types.StringTypes):
+        if not isinstance(adapter, (str,)):
             metadata = {typeName: "Generic",
                         "%s.ValueClass" % typeName: adapter}
 

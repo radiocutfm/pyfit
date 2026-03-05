@@ -19,4 +19,4 @@ class CalculateFixtureUnderTest2(CalculateFixture):
 
     _typeDict["exceptionMethod.types"] = ["String"]
     def exceptionMethod(self):
-        raise Exception, "Expected exception"
+        raise Exception("Expected exception")

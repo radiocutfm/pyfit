@@ -18,11 +18,6 @@ from fit.SiteOptions import BatchBase
 from fit.Utilities import em
 from fit import Variations
 
-try:
-    False
-except: #pragma: no cover
-    True = 1
-    False = 0
 
 def makeRowFixtureTest():
     theSuite = makeSuite(Test_RowFixture, 'test')
@@ -71,14 +66,14 @@ class RowFixture1(RowFixture):
 
 class Test_RowFixture(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def _doTable(self, obj, table):
         self.exceptionWasPropagated = False
         headCell = table.parts.parts
         try:
             obj.doTable(table)
-        except FitException, e:
+        except FitException as e:
             self.exceptionWasPropagated = True
             obj.exception(headCell, e)
 
@@ -139,7 +134,7 @@ class Test_RowFixture(TestCase):
 
 class TestRowFixtureBind(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def _createLabelRow(self, labels):
         first = Parse(tag="td")
@@ -199,7 +194,7 @@ class TestRowFixtureBind(TestCase):
         obj.setActualCollection()
         try:
             unused = obj.bind(labels)
-        except FitException, e:
+        except FitException as e:
             if e.args[0] != "IgnoreException":
                 raise
         assert labels.tagIsError()
@@ -212,7 +207,7 @@ class TestRowFixtureBind(TestCase):
         obj.setActualCollection()
         try:
             unused = obj.bind(labels)
-        except FitException, e:
+        except FitException as e:
             if e.args[0] != "IgnoreException":
                 raise
         assert labels.tagIsNotAnnotated()
@@ -238,7 +233,7 @@ class RowFixtureForMarkupOff(RowFixture):
 
 class SpecifyMarkupOff(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         self.options = Options(["FileRunner", "+v", "foo", "bar"],
                                BatchBase.parmDict)
         self.saveFitGlobal = (FitGlobal.RunOptions, FitGlobal.Options,
@@ -291,7 +286,7 @@ class RowFixtureForExtendedLabelProcess(RowFixture):
 
 class SpecifyExtendedLabelProcess(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         self.options = Options(["FileRunner", "+v", "foo", "bar"],
                                BatchBase.parmDict)
         self.saveFitGlobal = (FitGlobal.RunOptions, FitGlobal.Options,
@@ -334,7 +329,7 @@ class CollSymbol(object):
 
 class SpecifyCollectionFromSymbol(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
 
     def shouldHandleCollectionFromSymbol(self):
         fix = RowFixture()
@@ -380,7 +375,7 @@ class ProcObj(object):
 
 class TestRowFixtureProcess(TestCase):
     def setUp(self):
-        print '%s %s' % (self.id(), self.shortDescription())
+        print('%s %s' % (self.id(), self.shortDescription()))
         FitGlobal.testLevelSymbols = {}
 
     def tearDown(self):
@@ -517,7 +512,7 @@ class TestRowFixtureProcess(TestCase):
         coll = [ProcObj("Three", "Blind", "Mice"),
                 ProcObj("Lord", "Lova", "Duck"),
                 {"c1": "Larry", "Huh": "Moe", "c3": "Curly"},
-                {"c1": "Larry", "Huh": u"\u00a1", "c3": "Curly"}]
+                {"c1": "Larry", "Huh": "\u00a1", "c3": "Curly"}]
         coll[0].Huh = "Blind"
         coll[1].Huh = "says to"
         metaData = {"c1": "String", "c2": "String", "c3": "String"}

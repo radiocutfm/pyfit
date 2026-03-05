@@ -21,13 +21,6 @@
 from fit.ActionFixture import ActionFixture
 from fit.Fixture import Fixture
 from fitLib.specify.AnotherActor import AnotherActor
-
-try:
-    False
-except:
-    False = 0
-    True = 1
-
 class ActionFixtureUnderTest(Fixture):
     _typeDict = {"result": "Integer"}
     result = 0
@@ -54,14 +47,14 @@ class ActionFixtureUnderTest(Fixture):
 
     _typeDict["enterThrows"] = "String"
     def enterThrows(self, s):
-        raise Exception, "this is a test"
+        raise Exception("this is a test")
 
     def pressThrows(self):
-        raise Exception, "this is a test"
+        raise Exception("this is a test")
 
     _typeDict["checkThrows"] = "String"
     def checkThrows(self):
-        raise Exception, "this is a test"
+        raise Exception("this is a test")
 
     _typeDict["pressMethodReturningInt"] = "Integer"
     def  pressMethodReturningInt(self):

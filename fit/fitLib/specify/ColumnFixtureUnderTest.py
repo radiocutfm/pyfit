@@ -35,7 +35,7 @@ class ColumnFixtureUnderTest(ColumnFixture):
 
     _typeDict["exceptionMethod"] = "Int"    
     def exceptionMethod(self):
-        raise Exception, "this is just a test..."
+        raise Exception("this is just a test...")
         
     _typeDict["voidMethod"] = ""    
     def voidMethod(self):

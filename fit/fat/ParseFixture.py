@@ -36,11 +36,11 @@ class ParseFixture(ColumnFixture):
 
 
         if inputColumns != 1:
-            raise Exception, ("Exactly ONE of the following columns is"
+            raise Exception("Exactly ONE of the following columns is"
                               " needed: 'Html', 'TableCell', or 'Entity'")
 
 #        html = html.replaceAll("\\\\u00a0", "\u00a0")
-        html = self.parseRE.sub(u"\u00a0", html)
+        html = self.parseRE.sub("\u00a0", html)
         result = Parse(html)
         return result
     parseRE = re.compile(r"\\u00a0", re.I)
@@ -56,12 +56,12 @@ class ParseFixture(ColumnFixture):
 
     _typeDict["Parse"] = "String"    
     def Parse(self):
-        print '---------------------- ParseFixture.Parse'
+        print('---------------------- ParseFixture.Parse')
         parse = self.GenerateParse()
         text = self.dumpTables(parse)
         
-        print "-- result tables '%s'" % self._xencode(text)
-        print "-- result in hex '%s'" % self._xhex(text)
+        print("-- result tables '%s'" % self._xencode(text))
+        print("-- result in hex '%s'" % self._xhex(text))
         return text
 
     def _xencode(self, aString):
@@ -110,6 +110,6 @@ class ParseFixture(ColumnFixture):
         if type(text) == type(""):
             text = text.replace("\xa0", r"\u00a0")
         else:
-            text = text.replace(u"\xa0", ur"\u00a0")
+            text = text.replace("\xa0", r"\u00a0")
             
         return text
