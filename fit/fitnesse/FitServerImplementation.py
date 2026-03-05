@@ -159,13 +159,17 @@ class FitNesseNetworkInterface(object):
 ##        return self
 ##
     def read(self, size):
-        resultString = ""
-        while len(resultString) < size:
-            result = self.socket.recv(size - len(resultString))
-            resultString += result
-        return resultString.decode("utf-8")
+        resultBytes = b""
+        while len(resultBytes) < size:
+            result = self.socket.recv(size - len(resultBytes))
+            if not result:
+                break
+            resultBytes += result
+        return resultBytes.decode("utf-8")
 
     def write(self, document):
+        if isinstance(document, str):
+            document = document.encode("utf-8")
         self.socket.sendall(document)
 
     def flush(self):
